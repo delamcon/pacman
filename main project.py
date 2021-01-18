@@ -41,9 +41,14 @@ class Board:
     def render(self):
         for x in range(self.width):
             for y in range(self.height):
-                pygame.draw.rect(self.screen, (125, 125, 125), (x * self.cell_size + self.left,
-                                                                y * self.cell_size + self.top, self.cell_size,
-                                                                self.cell_size), width=1)
+                if self.board[y][x] == 0:
+                    pygame.draw.rect(self.screen, (125, 125, 125), (x * self.cell_size + self.left,
+                                                                    y * self.cell_size + self.top,
+                                                                    self.cell_size, self.cell_size), width=1)
+                if self.board[y][x] == 1:
+                    pygame.draw.rect(self.screen, (255, 255, 255), (x * self.cell_size + self.left,
+                                                                    y * self.cell_size + self.top,
+                                                                    self.cell_size, self.cell_size), width=0)
 
 
 class Pacman(Board):
@@ -55,10 +60,6 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(WINDOW_SIZE)
 
     running = True
-
-    defx = 10
-    defy = 10
-    cell_size = 25
 
     pacman = Pacman(screen)  # передаем только поверхность, потому что размеры известны
     pacman.render()
