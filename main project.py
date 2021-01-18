@@ -42,6 +42,12 @@ class Board:
     def render(self):
         for x in range(self.width):
             for y in range(self.height):
+
+                for i in range(-1, 2, 1):
+                    for j in range(-1, 2, 1):
+                        if (y + i >= 0 and x + j >= 0) and (y + i <= 21 and x + j <= 19):
+                            if self.board[y + i][x + j] == 0 and self.board[y][x] == 1:
+                                pygame.draw.line(self.screen, (0, 0, 128), start_pos, end_pos, width)
                 if self.board[y][x] == 0:
                     pygame.draw.rect(self.screen, (0, 0, 0), (x * self.cell_size + self.left,
                                                               y * self.cell_size + self.top,
