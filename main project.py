@@ -1,7 +1,7 @@
 import pygame
 
 WINDOW_SIZE = WIDTH, HEIGHT = 475, 550  # размер поля (19, 22), размер клетки 25
-
+# почему все так....
 
 class Board:
     def __init__(self, screen):
