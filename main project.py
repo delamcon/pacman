@@ -5,7 +5,7 @@ WINDOW_SIZE = WIDTH, HEIGHT = 475, 525  # размер поля (19, 21), раз
 
 class Board:
     def __init__(self, screen):
-        self.width = 27  # ширина поля
+        self.width = 19  # ширина поля
         self.height = 21  # высота поля
         self.screen = screen  # поверхность, на которой все выводим
 
