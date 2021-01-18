@@ -55,8 +55,6 @@ if __name__ == '__main__':
 
     running = True
 
-    start = False
-
     defx = 10
     defy = 10
     cell_size = 25
