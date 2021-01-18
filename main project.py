@@ -42,9 +42,9 @@ class Board:
         for x in range(self.width):
             for y in range(self.height):
                 if self.board[y][x] == 0:
-                    pygame.draw.rect(self.screen, (125, 125, 125), (x * self.cell_size + self.left,
+                    pygame.draw.rect(self.screen, (0, 0, 0), (x * self.cell_size + self.left,
                                                                     y * self.cell_size + self.top,
-                                                                    self.cell_size, self.cell_size), width=1)
+                                                                    self.cell_size, self.cell_size), width=0)
                 if self.board[y][x] == 1:
                     pygame.draw.rect(self.screen, (255, 255, 255), (x * self.cell_size + self.left,
                                                                     y * self.cell_size + self.top,
