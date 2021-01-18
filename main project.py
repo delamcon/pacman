@@ -1,6 +1,6 @@
 import pygame
 
-WINDOW_SIZE = WIDTH, HEIGHT = 475, 525  # размер поля (19, 21), размер клетки 25
+WINDOW_SIZE = WIDTH, HEIGHT = 475, 550  # размер поля (19, 22), размер клетки 25
 
 
 class Board:
