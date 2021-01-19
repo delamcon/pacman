@@ -57,7 +57,10 @@ class Board:
 
 
 class Pacman(Board):
-    pass
+    def create_pacman(self):  # создаем пакмана на поле, метод вызывается один раз
+        pygame.draw.rect(self.screen, (255, 255, 0), (self.x * self.cell_size + self.left,
+                                                      self.y * self.cell_size + self.top,
+                                                      self.cell_size, self.cell_size), width=0)
 
 
 if __name__ == '__main__':
