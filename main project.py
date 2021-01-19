@@ -1,7 +1,7 @@
 import pygame
 
 WINDOW_SIZE = WIDTH, HEIGHT = 475, 550  # размер поля (19, 22), размер клетки 25
-# почему все так.... реально
+TICK = pygame.USEREVENT + 1  # событие, нужно для отсчета одного момента
 
 class Board:
     def __init__(self, screen):
@@ -67,6 +67,7 @@ if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode(WINDOW_SIZE)
 
+    pygame.time.set_timer(TICK, 20)
     running = True
 
     pacman = Pacman(screen)  # передаем только поверхность, потому что размеры известны
@@ -77,5 +78,17 @@ if __name__ == '__main__':
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.KEYDOWN:  # проверка по кнопкам ASDW
+                if event.key == 97:  # проверяем A
+                    pass
+                if event.key == 115:  # проверяем S
+                    pass
+                if event.key == 100:  # проверяем D
+                    pass
+                if event.key == 119:  # проверяем W
+                    pass
+            if event.type == TICK:
+                pass
+
         pygame.display.flip()
     pygame.quit()
