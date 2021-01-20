@@ -90,7 +90,7 @@ class Pacman(Board):
                     # слева, при i = -1
                     retset.add(keys[count])  # добавляем код кнопки, если ход есть
                 count += 1  # прибавляем 90градусов
-                if self.board[y + i][x] == 0 and self.board[y + i][x] == 3: # проверяем есть ли ход снизу, при i = 1 и
+                if self.board[y + i][x] == 0 and self.board[y + i][x] == 3:  # проверяем есть ли ход снизу, при i = 1 и
                     # сверху, при i = -1
                     retset.add(keys[count])  # добавляем код кнопки, если ход есть
                 count += 1  # прибавляем 90градусов
@@ -121,13 +121,13 @@ if __name__ == '__main__':
                 running = False
             if event.type == pygame.KEYDOWN:  # проверка по кнопкам ASDW
                 if event.key == 97:  # проверяем A
-                    pass
+                    pacman.pacman_movement(97,)
                 if event.key == 115:  # проверяем S
-                    pass
+                    pacman.pacman_movement(115,)
                 if event.key == 100:  # проверяем D
-                    pass
+                    pacman.pacman_movement(100,)
                 if event.key == 119:  # проверяем W
-                    pass
+                    pacman.pacman_movement(119,)
             if event.type == TICK:
                 pass
 
