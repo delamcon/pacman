@@ -20,7 +20,6 @@ class Board:
 
         self.nodes_pos = set()
 
-
         self.board = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                       [1, 3, 0, 0, 3, 0, 0, 0, 3, 1, 3, 0, 0, 0, 3, 0, 0, 3, 1],
                       [1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
@@ -46,6 +45,7 @@ class Board:
         # 0 - клетка, по которой можно ходить,
         # 1 - стена
         # 2 - стенка выхода привидений
+        # 3 - узел, расходжение путей
 
     def render(self):
         for x in range(self.width):
@@ -74,13 +74,31 @@ class Pacman(Board):
                                                       self.y * self.cell_size + self.top,
                                                       self.cell_size, self.cell_size), width=0)
 
-    def pacman_movement(self):
+    def nodes(self):
         for x in range(self.width):
             for y in range(self.height):
                 if self.board[y][x] == 3:
-                    self.nodes_pos.add(f'({[x]}, {[y]})')
+                    self.nodes_pos.add((x, y))
 
-        print(self.nodes_pos)
+    def pacman_movement(self, key, y, x):  # key - проверяемый ход WASD в виде кода кнопок, (y, x) - координата клетки
+        keys = {0: 100, 1: 115, 2: 97, 3: 119}  #
+        count = 0  # счетчик для оборота по круговой окружности против часовой стрелки по 90градусов, сначала 0градусов
+        retset = set()  # множество для записи допустимых кнопок
+        for i in range(1, -2, -1):
+            if i != 0:
+                if self.board[y][x + i] == 0 or self.board[y][x + i] == 3:  # проверяем есть ли ход справа, при i = 1 и
+                    # слева, при i = -1
+                    retset.add(keys[count])  # добавляем код кнопки, если ход есть
+                count += 1  # прибавляем 90градусов
+                if self.board[y + i][x] == 0 and self.board[y + i][x] == 3: # проверяем есть ли ход снизу, при i = 1 и
+                    # сверху, при i = -1
+                    retset.add(keys[count])  # добавляем код кнопки, если ход есть
+                count += 1  # прибавляем 90градусов
+        print(retset)
+        if key in retset:  # проверяем допустим ли наш ход WASD
+            return True
+        else:
+            return False
 
 
 if __name__ == '__main__':
@@ -93,7 +111,8 @@ if __name__ == '__main__':
     pacman = Pacman(screen)  # передаем только поверхность, потому что размеры известны
     pacman.render()
     pacman.create_pacman()
-    pacman.pacman_movement()
+    pacman.nodes()
+    print(pacman.pacman_movement(119, 2, 8))  # проверка функции
     pygame.display.flip()
 
     while running:
