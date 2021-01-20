@@ -18,6 +18,8 @@ class Board:
         self.top = 0  # отступ с левого верхнего края по оси y (пока нет счета очков, будет 0)
         self.cell_size = 25  # размер клетки в пикселях
 
+        self.nodes_pos = set()
+
 
         self.board = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                       [1, 3, 0, 0, 3, 0, 0, 0, 3, 1, 3, 0, 0, 0, 3, 0, 0, 3, 1],
@@ -72,6 +74,14 @@ class Pacman(Board):
                                                       self.y * self.cell_size + self.top,
                                                       self.cell_size, self.cell_size), width=0)
 
+    def pacman_movement(self):
+        for x in range(self.width):
+            for y in range(self.height):
+                if self.board[y][x] == 3:
+                    self.nodes_pos.add(f'({[x]}, {[y]})')
+
+        print(self.nodes_pos)
+
 
 if __name__ == '__main__':
     pygame.init()
@@ -83,6 +93,7 @@ if __name__ == '__main__':
     pacman = Pacman(screen)  # передаем только поверхность, потому что размеры известны
     pacman.render()
     pacman.create_pacman()
+    pacman.pacman_movement()
     pygame.display.flip()
 
     while running:
