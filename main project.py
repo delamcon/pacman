@@ -81,6 +81,8 @@ class Pacman(Board):
                     self.nodes_pos.add((x, y))
 
     def pacman_movement(self, key, y, x):  # key - проверяемый ход WASD в виде кода кнопок, (y, x) - координата клетки
+        y = y // 25
+        x = x // 25
         keys = {0: 100, 1: 115, 2: 97, 3: 119}  #
         count = 0  # счетчик для оборота по круговой окружности против часовой стрелки по 90градусов, сначала 0градусов
         self.retset = set()  # множество для записи допустимых кнопок
@@ -96,7 +98,7 @@ class Pacman(Board):
                 count += 1  # прибавляем 90градусов
         print(self.retset)
         if key in self.retset:  # проверяем допустим ли наш ход WASD
-            pacman.pacman_move()
+            pacman.pacman_move(PacmanCurrentKey)  # вызываем метод самого движения
         else:
             pass
 
@@ -147,6 +149,10 @@ class Pacman(Board):
                 pygame.display.flip()
 
 
+    def pacman_pos(self):
+        return self.PacmanCurrentPos
+
+
 if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode(WINDOW_SIZE)
@@ -167,13 +173,29 @@ if __name__ == '__main__':
                 running = False
             if event.type == pygame.KEYDOWN:  # проверка по кнопкам ASDW
                 if event.key == 97:  # проверяем A
-                    pacman.pacman_movement(97,)
+                    pacman_cur_pos = pacman.pacman_pos()  # получаем координаты в реальном времени
+                    PacmanCurrentKey = 'a'
+                    pacman.pacman_movement(97, pacman_cur_pos[1], pacman_cur_pos[0])
+                    # вызов метода проверки возможности хода
+                    '''if pacman.pacman_movement(97, y, x):
+                        pygame.draw.rect(screen, (26, 185, 192), (x * 25,
+                                                                  y * 25,
+                                                                  25, 25), width=0)'''
                 if event.key == 115:  # проверяем S
-                    pacman.pacman_movement(115,)
+                    pacman_cur_pos = pacman.pacman_pos()  # получаем координаты в реальном времени
+                    PacmanCurrentKey = 's'
+                    pacman.pacman_movement(115, pacman_cur_pos[1], pacman_cur_pos[0])
+                    # вызов метода проверки возможности хода
                 if event.key == 100:  # проверяем D
-                    pacman.pacman_movement(100,)
+                    pacman_cur_pos = pacman.pacman_pos()  # получаем координаты в реальном времени
+                    PacmanCurrentKey = 'd'
+                    pacman.pacman_movement(100, pacman_cur_pos[1], pacman_cur_pos[0])
+                    # вызов метода проверки возможности хода
                 if event.key == 119:  # проверяем W
-                    pacman.pacman_movement(119,)
+                    pacman_cur_pos = pacman.pacman_pos()  # получаем координаты в реальном времени
+                    PacmanCurrentKey = 'w'
+                    pacman.pacman_movement(119, pacman_cur_pos[1], pacman_cur_pos[0])
+                    # вызов метода проверки возможности хода
             if event.type == TICK:
                 pass
 
