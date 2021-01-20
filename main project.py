@@ -83,22 +83,68 @@ class Pacman(Board):
     def pacman_movement(self, key, y, x):  # key - проверяемый ход WASD в виде кода кнопок, (y, x) - координата клетки
         keys = {0: 100, 1: 115, 2: 97, 3: 119}  #
         count = 0  # счетчик для оборота по круговой окружности против часовой стрелки по 90градусов, сначала 0градусов
-        retset = set()  # множество для записи допустимых кнопок
+        self.retset = set()  # множество для записи допустимых кнопок
         for i in range(1, -2, -1):
             if i != 0:
                 if self.board[y][x + i] == 0 or self.board[y][x + i] == 3:  # проверяем есть ли ход справа, при i = 1 и
                     # слева, при i = -1
-                    retset.add(keys[count])  # добавляем код кнопки, если ход есть
+                    self.retset.add(keys[count])  # добавляем код кнопки, если ход есть
                 count += 1  # прибавляем 90градусов
                 if self.board[y + i][x] == 0 and self.board[y + i][x] == 3:  # проверяем есть ли ход снизу, при i = 1 и
                     # сверху, при i = -1
-                    retset.add(keys[count])  # добавляем код кнопки, если ход есть
+                    self.retset.add(keys[count])  # добавляем код кнопки, если ход есть
                 count += 1  # прибавляем 90градусов
-        print(retset)
-        if key in retset:  # проверяем допустим ли наш ход WASD
-            return True
+        print(self.retset)
+        if key in self.retset:  # проверяем допустим ли наш ход WASD
+            pacman.pacman_move()
         else:
-            return False
+            pass
+
+    def pacman_move(self, key):
+        if key == 'a':
+            x = (self.PacmanCurrentPos[0] - 1 - self.left) // self.cell_size
+            y = (self.PacmanCurrentPos[1] - self.left) // self.cell_size
+            print(x, y, self.board[y][x], self.PacmanCurrentPos)
+            if self.board[y][x] != 1:
+                pygame.draw.rect(self.screen, (0, 0, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
+                                                              self.cell_size, self.cell_size), width=0)
+                self.PacmanCurrentPos = (self.PacmanCurrentPos[0] - 1, self.PacmanCurrentPos[1])
+                pygame.draw.rect(self.screen, (255, 255, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
+                                                              self.cell_size, self.cell_size), width=0)
+                pygame.display.flip()
+        if key == 's':
+            x = (self.PacmanCurrentPos[0] - self.left) // self.cell_size
+            y = (self.PacmanCurrentPos[1] + 1 - self.left) // self.cell_size
+            print(x, y, self.board[y][x], self.PacmanCurrentPos)
+            if self.board[y][x] != 1:
+                pygame.draw.rect(self.screen, (0, 0, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
+                                                          self.cell_size, self.cell_size), width=0)
+                self.PacmanCurrentPos = (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1] + 1)
+                pygame.draw.rect(self.screen, (255, 255, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
+                                                              self.cell_size, self.cell_size), width=0)
+                pygame.display.flip()
+        if key == 'd':
+            x = (self.PacmanCurrentPos[0] + 1 - self.left) // self.cell_size
+            y = (self.PacmanCurrentPos[1] - self.left) // self.cell_size
+            print(x, y, self.board[y][x], self.PacmanCurrentPos)
+            if self.board[y][x] != 1:
+                pygame.draw.rect(self.screen, (0, 0, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
+                                                          self.cell_size, self.cell_size), width=0)
+                self.PacmanCurrentPos = (self.PacmanCurrentPos[0] + 1, self.PacmanCurrentPos[1])
+                pygame.draw.rect(self.screen, (255, 255, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
+                                                              self.cell_size, self.cell_size), width=0)
+                pygame.display.flip()
+        if key == 'w':
+            x = (self.PacmanCurrentPos[0] - self.left) // self.cell_size
+            y = (self.PacmanCurrentPos[1] - 1 - self.left) // self.cell_size
+            print(x, y, self.board[y][x], self.PacmanCurrentPos)
+            if self.board[y][x] != 1:
+                pygame.draw.rect(self.screen, (0, 0, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
+                                                          self.cell_size, self.cell_size), width=0)
+                self.PacmanCurrentPos = (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1] - 1)
+                pygame.draw.rect(self.screen, (255, 255, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
+                                                              self.cell_size, self.cell_size), width=0)
+                pygame.display.flip()
 
 
 if __name__ == '__main__':
