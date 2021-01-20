@@ -9,6 +9,10 @@ class Board:
         self.height = 22  # высота поля
         self.screen = screen  # поверхность, на которой все выводим
 
+        self.y = 12  # координаты пакмана во вложенном списке
+        self.x = 9  # нужен для метода create_pacman в классе Pacman
+        self.PacmanCurrentPos = (225, 300)  # сохраняет позицию пакмана, (225, 300) - позиция в начале игры в пикселях
+
         self.left = 0  # отступ с левого верхнего края по оси x (пока нет счета очков, будет 0)
         self.top = 0  # отступ с левого верхнего края по оси y (пока нет счета очков, будет 0)
         self.cell_size = 25  # размер клетки в пикселях
@@ -83,6 +87,7 @@ if __name__ == '__main__':
 
     pacman = Pacman(screen)  # передаем только поверхность, потому что размеры известны
     pacman.render()
+    pacman.create_pacman()
     pygame.display.flip()
 
     while running:
