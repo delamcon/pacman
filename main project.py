@@ -3,6 +3,7 @@ import pygame
 WINDOW_SIZE = WIDTH, HEIGHT = 475, 550  # размер поля (19, 22), размер клетки 25
 TICK = pygame.USEREVENT + 1  # событие, нужно для отсчета одного момента
 
+
 class Board:
     def __init__(self, screen):
         self.width = 19  # ширина поля
