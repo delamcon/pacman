@@ -18,7 +18,6 @@ class Board:
         self.top = 0  # отступ с левого верхнего края по оси y (пока нет счета очков, будет 0)
         self.cell_size = 25  # размер клетки в пикселях
 
-        self.nodes_list = []
 
         self.board = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                       [1, 3, 0, 0, 3, 0, 0, 0, 3, 1, 3, 0, 0, 0, 3, 0, 0, 3, 1],
@@ -65,11 +64,6 @@ class Board:
                     pygame.draw.rect(self.screen, (26, 185, 192), (x * self.cell_size + self.left,
                                                                    y * self.cell_size + self.top,
                                                                    self.cell_size, self.cell_size), width=0)
-                    self.nodes_list.append(3)
-
-        print(self.nodes_list)
-        print(len(self.nodes_list))
-
 
 
 class Pacman(Board):
