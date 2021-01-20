@@ -81,8 +81,8 @@ class Pacman(Board):
                     self.nodes_pos.add((x, y))
 
     def pacman_movement(self, key, y, x):  # key - проверяемый ход WASD в виде кода кнопок, (y, x) - координата клетки
-        y = y // 25
-        x = x // 25
+        y = (y - self.top) // self.cell_size
+        x = (x - self.left) // self.cell_size
         keys = {0: 100, 1: 115, 2: 97, 3: 119}  #
         count = 0  # счетчик для оборота по круговой окружности против часовой стрелки по 90градусов, сначала 0градусов
         self.retset = set()  # множество для записи допустимых кнопок
@@ -98,12 +98,12 @@ class Pacman(Board):
                 count += 1  # прибавляем 90градусов
         print(self.retset)
         if key in self.retset:  # проверяем допустим ли наш ход WASD
-            pacman.pacman_move(PacmanCurrentKey)  # вызываем метод самого движения
+            pacman.pacman_move(key)  # вызываем метод самого движения
         else:
             pass
 
     def pacman_move(self, key):
-        if key == 'a':
+        if key == 97:
             x = (self.PacmanCurrentPos[0] - 1 - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] - self.left) // self.cell_size
             print(x, y, self.board[y][x], self.PacmanCurrentPos)
@@ -114,7 +114,7 @@ class Pacman(Board):
                 pygame.draw.rect(self.screen, (255, 255, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
                                                               self.cell_size, self.cell_size), width=0)
                 pygame.display.flip()
-        if key == 's':
+        elif key == 115:
             x = (self.PacmanCurrentPos[0] - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] + 1 - self.left) // self.cell_size
             print(x, y, self.board[y][x], self.PacmanCurrentPos)
@@ -125,7 +125,7 @@ class Pacman(Board):
                 pygame.draw.rect(self.screen, (255, 255, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
                                                               self.cell_size, self.cell_size), width=0)
                 pygame.display.flip()
-        if key == 'd':
+        elif key == 100:
             x = (self.PacmanCurrentPos[0] + 1 - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] - self.left) // self.cell_size
             print(x, y, self.board[y][x], self.PacmanCurrentPos)
@@ -136,7 +136,7 @@ class Pacman(Board):
                 pygame.draw.rect(self.screen, (255, 255, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
                                                               self.cell_size, self.cell_size), width=0)
                 pygame.display.flip()
-        if key == 'w':
+        elif key == 119:
             x = (self.PacmanCurrentPos[0] - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] - 1 - self.left) // self.cell_size
             print(x, y, self.board[y][x], self.PacmanCurrentPos)
@@ -147,7 +147,6 @@ class Pacman(Board):
                 pygame.draw.rect(self.screen, (255, 255, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
                                                               self.cell_size, self.cell_size), width=0)
                 pygame.display.flip()
-
 
     def pacman_pos(self):
         return self.PacmanCurrentPos
@@ -166,15 +165,16 @@ if __name__ == '__main__':
     pacman.nodes()
     print(pacman.pacman_movement(119, 2, 8))  # проверка функции
     pygame.display.flip()
+    PacmanCurrentKey = ''
 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:  # проверка по кнопкам ASDW
+                pacman_cur_pos = pacman.pacman_pos()  # получаем координаты в реальном времени
                 if event.key == 97:  # проверяем A
-                    pacman_cur_pos = pacman.pacman_pos()  # получаем координаты в реальном времени
-                    PacmanCurrentKey = 'a'
+                    PacmanCurrentKey = 97
                     pacman.pacman_movement(97, pacman_cur_pos[1], pacman_cur_pos[0])
                     # вызов метода проверки возможности хода
                     '''if pacman.pacman_movement(97, y, x):
@@ -182,22 +182,19 @@ if __name__ == '__main__':
                                                                   y * 25,
                                                                   25, 25), width=0)'''
                 if event.key == 115:  # проверяем S
-                    pacman_cur_pos = pacman.pacman_pos()  # получаем координаты в реальном времени
-                    PacmanCurrentKey = 's'
+                    PacmanCurrentKey = 115
                     pacman.pacman_movement(115, pacman_cur_pos[1], pacman_cur_pos[0])
                     # вызов метода проверки возможности хода
                 if event.key == 100:  # проверяем D
-                    pacman_cur_pos = pacman.pacman_pos()  # получаем координаты в реальном времени
-                    PacmanCurrentKey = 'd'
+                    PacmanCurrentKey = 100
                     pacman.pacman_movement(100, pacman_cur_pos[1], pacman_cur_pos[0])
                     # вызов метода проверки возможности хода
                 if event.key == 119:  # проверяем W
-                    pacman_cur_pos = pacman.pacman_pos()  # получаем координаты в реальном времени
-                    PacmanCurrentKey = 'w'
+                    PacmanCurrentKey = 119
                     pacman.pacman_movement(119, pacman_cur_pos[1], pacman_cur_pos[0])
                     # вызов метода проверки возможности хода
             if event.type == TICK:
-                pass
-
+                pacman_cur_pos = pacman.pacman_pos()
+                pacman.pacman_movement(PacmanCurrentKey, pacman_cur_pos[1], pacman_cur_pos[0])
         pygame.display.flip()
     pygame.quit()
