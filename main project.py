@@ -89,13 +89,19 @@ class Pacman(Board):
         self.retset = set()  # множество для записи допустимых кнопок
         for i in range(1, -2, -1):
             if i != 0:
-                coordcheck = self.board[cy][cx + i] == 0 or self.board[cy][cx + i] == 3
-                if (y != cy * self.cell_size + self.top and x != cx * self.cell_size + self.left) or coordcheck:  # проверяем есть ли ход справа, при i = 1 и
+                coordcheck = self.board[cy][cx + i] == 1
+                if not((((y + 25) == cy * self.cell_size + self.top and (x + 25) == cx * self.cell_size + self.left) or
+                        (y == ((cy + 1) * self.cell_size + self.top - 1) and (x + 25) == cx * self.cell_size + self.left) or
+                        ((y + 25) == cy * self.cell_size + self.top and x == ((cx + 1) * self.cell_size + self.left - 1)) or
+                        (y == (cy + 1) * self.cell_size + self.top - 1 and x == (cx + 1) * self.cell_size + self.left - 1)) and coordcheck):  # проверяем есть ли ход справа, при i = 1 и
                     # слева, при i = -1
                     self.retset.add(keys[count])  # добавляем код кнопки, если ход есть
                 count += 1  # прибавляем 90градусов
-                coordcheck = (self.board[cy + i][cx] == 0 and self.board[cy + i][cx] == 3)
-                if (y != cy * self.cell_size + self.top and x != cx * self.cell_size + self.left) or  coordcheck:  # проверяем есть ли ход снизу, при i = 1 и
+                coordcheck = self.board[cy + i][cx] == 1
+                if not((((y + 25) == cy * self.cell_size + self.top and (x + 25) == cx * self.cell_size + self.left) or
+                        (y == ((cy + 1) * self.cell_size + self.top - 1) and (x + 25) == cx * self.cell_size + self.left) or
+                        ((y + 25) == cy * self.cell_size + self.top and x == ((cx + 1) * self.cell_size + self.left - 1)) or
+                        (y == (cy + 1) * self.cell_size + self.top - 1 and x == (cx + 1) * self.cell_size + self.left - 1)) and coordcheck):  # проверяем есть ли ход снизу, при i = 1 и
                     # сверху, при i = -1
                     self.retset.add(keys[count])  # добавляем код кнопки, если ход есть
                 count += 1  # прибавляем 90градусов
