@@ -92,7 +92,7 @@ class Pacman(Board):
                     # слева, при i = -1
                     self.retset.add(keys[count])  # добавляем код кнопки, если ход есть
                 count += 1  # прибавляем 90градусов
-                if self.board[y + i][x] == 0 and self.board[y + i][x] == 3:  # проверяем есть ли ход снизу, при i = 1 и
+                if self.board[y + i][x] == 0 or self.board[y + i][x] == 3:  # проверяем есть ли ход снизу, при i = 1 и
                     # сверху, при i = -1
                     self.retset.add(keys[count])  # добавляем код кнопки, если ход есть
                 count += 1  # прибавляем 90градусов
