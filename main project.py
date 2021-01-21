@@ -90,12 +90,12 @@ class Pacman(Board):
         for i in range(1, -2, -1):
             if i != 0:
                 coordcheck = self.board[cy][cx + i] == 0 or self.board[cy][cx + i] == 3
-                if not ((y == cy * self.cell_size + self.top and x == cx * self.cell_size + self.left) and coordcheck):  # проверяем есть ли ход справа, при i = 1 и
+                if (y != cy * self.cell_size + self.top and x != cx * self.cell_size + self.left) or coordcheck:  # проверяем есть ли ход справа, при i = 1 и
                     # слева, при i = -1
                     self.retset.add(keys[count])  # добавляем код кнопки, если ход есть
                 count += 1  # прибавляем 90градусов
                 coordcheck = (self.board[cy + i][cx] == 0 and self.board[cy + i][cx] == 3)
-                if not ((y == cy * self.cell_size + self.top and x == cx * self.cell_size + self.left) and  coordcheck):  # проверяем есть ли ход снизу, при i = 1 и
+                if (y != cy * self.cell_size + self.top and x != cx * self.cell_size + self.left) or  coordcheck:  # проверяем есть ли ход снизу, при i = 1 и
                     # сверху, при i = -1
                     self.retset.add(keys[count])  # добавляем код кнопки, если ход есть
                 count += 1  # прибавляем 90градусов
