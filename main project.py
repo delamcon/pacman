@@ -89,6 +89,7 @@ class Pacman(Board):
         self.retset = set()  # множество для записи допустимых кнопок
         for i in range(1, -2, -1):
             if i != 0:
+
                 coordcheck = self.board[cy][cx + i] == 1
                 if not((((y + 25) == cy * self.cell_size + self.top and (x + 25) == cx * self.cell_size + self.left) or
                         (y == ((cy + 1) * self.cell_size + self.top - 1) and (x + 25) == cx * self.cell_size + self.left) or
