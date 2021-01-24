@@ -141,7 +141,7 @@ class Pacman(pygame.sprite.Sprite):
             print(x, y, self.board[y][x], self.PacmanCurrentPos)
             if self.board[y][x] != 1:
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0] - 1, self.PacmanCurrentPos[1])
-                self.main_pacman_sprite.x = self.PacmanCurrentPos[0]
+                self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
                 self.all_sprites.draw(screen)
                 pygame.display.flip()
@@ -151,7 +151,7 @@ class Pacman(pygame.sprite.Sprite):
             print(x, y, self.board[y][x], self.PacmanCurrentPos)
             if self.board[y][x] != 1:
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1] + 1)
-                self.main_pacman_sprite.x = self.PacmanCurrentPos[0]
+                self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
                 self.all_sprites.draw(screen)
                 pygame.display.flip()
@@ -161,7 +161,7 @@ class Pacman(pygame.sprite.Sprite):
             print(x, y, self.board[y][x], self.PacmanCurrentPos)
             if self.board[y][x] != 1:
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0] + 1, self.PacmanCurrentPos[1])
-                self.main_pacman_sprite.x = self.PacmanCurrentPos[0]
+                self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
                 self.all_sprites.draw(screen)
                 pygame.display.flip()
@@ -171,7 +171,7 @@ class Pacman(pygame.sprite.Sprite):
             print(x, y, self.board[y][x], self.PacmanCurrentPos)
             if self.board[y][x] != 1:
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1] - 1)
-                self.main_pacman_sprite.x = self.PacmanCurrentPos[0]
+                self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
                 self.all_sprites.draw(screen)
                 pygame.display.flip()
