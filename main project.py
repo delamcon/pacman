@@ -1,8 +1,23 @@
 import pygame
+import sys
+import os
 
 WINDOW_SIZE = WIDTH, HEIGHT = 475, 550  # размер поля (19, 22), размер клетки 25
 TICK = pygame.USEREVENT + 1  # событие, нужно для отсчета одного момента
 
+
+def load_image(name, colorkey=None):
+    fullname = os.path.join('data', name)
+    # если файл не существует, то выходим
+    if not os.path.isfile(fullname):
+        print(f"Файл с изображением '{fullname}' не найден")
+        sys.exit()
+    image = pygame.image.load(fullname)
+    return image
+
+all_sprites = pygame.sprite.Group()
+main_pacman_sprite = pygame.sprite.Sprite()
+main_pacman_sprite.image = load_image('pacmanleft.png')
 
 class Board:
     def __init__(self, screen):
@@ -70,7 +85,12 @@ class Board:
                                                                    self.cell_size, self.cell_size), width=0)
 
 
-class Pacman(Board):
+class Pacman(pygame.sprite.Sprite, Board):
+    def __init__(self):
+        super().__init__()
+
+
+
     def create_pacman(self):  # создаем пакмана на поле, метод вызывается один раз
         pygame.draw.rect(self.screen, (255, 255, 0), (self.x * self.cell_size + self.left,
                                                       self.y * self.cell_size + self.top,
