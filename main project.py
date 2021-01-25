@@ -33,9 +33,13 @@ class Pacman(pygame.sprite.Sprite):
 
         self.all_sprites = pygame.sprite.Group()
         self.main_pacman_sprite = pygame.sprite.Sprite()
+        self.circ_pacman_sprite = pygame.sprite.Sprite()
         self.main_pacman_sprite.image = pygame.image.load('data/pacmanleft.png')
+        self.circ_pacman_sprite.image = pygame.image.load('data/pcmcirc.png')
         self.main_pacman_sprite.rect = self.main_pacman_sprite.image.get_rect()
+        self.circ_pacman_sprite.rect = self.circ_pacman_sprite.image.get_rect()
         self.all_sprites.add(self.main_pacman_sprite)
+        self.all_sprites.add(self.circ_pacman_sprite)
 
 
         self.currentkey = 0
@@ -139,7 +143,7 @@ class Pacman(pygame.sprite.Sprite):
             x = (self.PacmanCurrentPos[0] - 1 - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] - self.left) // self.cell_size
             print(x, y, self.board[y][x], self.PacmanCurrentPos)
-            if self.board[y][x] != 1:
+            if self.board[y][x] != 1 and self.board[y][x] != 2:
                 pygame.draw.rect(self.screen, (0, 0, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
                                                           self.cell_size, self.cell_size), width=0)
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0] - 1, self.PacmanCurrentPos[1])
@@ -151,7 +155,7 @@ class Pacman(pygame.sprite.Sprite):
             x = (self.PacmanCurrentPos[0] - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] + 1 - self.left) // self.cell_size
             print(x, y, self.board[y][x], self.PacmanCurrentPos)
-            if self.board[y][x] != 1:
+            if self.board[y][x] != 1 and self.board[y][x] != 2:
                 pygame.draw.rect(self.screen, (0, 0, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
                                                           self.cell_size, self.cell_size), width=0)
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1] + 1)
@@ -163,7 +167,7 @@ class Pacman(pygame.sprite.Sprite):
             x = (self.PacmanCurrentPos[0] + 1 - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] - self.left) // self.cell_size
             print(x, y, self.board[y][x], self.PacmanCurrentPos)
-            if self.board[y][x] != 1:
+            if self.board[y][x] != 1 and self.board[y][x] != 2:
                 pygame.draw.rect(self.screen, (0, 0, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
                                                           self.cell_size, self.cell_size), width=0)
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0] + 1, self.PacmanCurrentPos[1])
@@ -175,7 +179,7 @@ class Pacman(pygame.sprite.Sprite):
             x = (self.PacmanCurrentPos[0] - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] - 1 - self.left) // self.cell_size
             print(x, y, self.board[y][x], self.PacmanCurrentPos)
-            if self.board[y][x] != 1:
+            if self.board[y][x] != 1 and self.board[y][x] != 2:
                 pygame.draw.rect(self.screen, (0, 0, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
                                                           self.cell_size, self.cell_size), width=0)
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1] - 1)
