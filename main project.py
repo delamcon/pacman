@@ -19,6 +19,7 @@ def load_image(name, colorkey=None):
 class Pacman(pygame.sprite.Sprite):
     def __init__(self, screen):
         super().__init__()
+        self.retset = set()  # множество для записи допустимых кнопок
         self.width = 19  # ширина поля
         self.height = 22  # высота поля
         self.screen = screen  # поверхность, на которой все выводим
@@ -103,7 +104,6 @@ class Pacman(pygame.sprite.Sprite):
         x = (cx - self.left) // self.cell_size
         keys = {0: 100, 1: 115, 2: 97, 3: 119}  #
         count = 0  # счетчик для оборота по круговой окружности против часовой стрелки по 90градусов, сначала 0градусов
-        self.retset = set()  # множество для записи допустимых кнопок
 
         horkeycheck = (key == 97 or key == 100)
         verkeycheck = (key == 119 or key == 115)
