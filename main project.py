@@ -6,16 +6,6 @@ WINDOW_SIZE = WIDTH, HEIGHT = 475, 550  # размер поля (19, 22), раз
 TICK = pygame.USEREVENT + 1  # событие, нужно для отсчета одного момента
 
 
-def load_image(name, colorkey=None):
-    fullname = os.path.join('data', name)
-    # если файл не существует, то выходим
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        sys.exit()
-    image = pygame.image.load(fullname)
-    return image
-
-
 class Pacman(pygame.sprite.Sprite):
     def __init__(self, screen):
         super().__init__()
