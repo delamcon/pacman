@@ -15,10 +15,6 @@ def load_image(name, colorkey=None):
     image = pygame.image.load(fullname)
     return image
 
-all_sprites = pygame.sprite.Group()
-main_pacman_sprite = pygame.sprite.Sprite()
-main_pacman_sprite.image = pygame.image.load('data/pacmanleft.png')
-
 
 class Pacman(pygame.sprite.Sprite):
     def __init__(self, screen):
