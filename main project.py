@@ -37,7 +37,6 @@ class Pacman(pygame.sprite.Sprite):
         self.all_sprites.add(self.main_pacman_sprite)
         self.all_sprites.add(self.circ_pacman_sprite)
 
-
         self.currentkey = 0
 
         self.left = 0  # отступ с левого верхнего края по оси x (пока нет счета очков, будет 0)
@@ -115,16 +114,18 @@ class Pacman(pygame.sprite.Sprite):
             for i in range(1, -2, -1):
                 if i != 0:
                     if (self.board[y][(cx - self.left + 1) // self.cell_size] != 1 and
-                        self.board[y][(cx - self.left + 26) // self.cell_size] != 1):  # проверяем есть ли ход справа
+                            self.board[y][
+                                (cx - self.left + 26) // self.cell_size] != 1):  # проверяем есть ли ход справа
                         self.retset.add(100)  # добавляем код кнопки D, если ход есть
                     if (self.board[(cy - self.left + 1) // self.cell_size][x] != 1 and
-                        self.board[(cy - self.left + 26) // self.cell_size][x] != 1):  # проверяем есть ли ход снизу
+                            self.board[(cy - self.left + 26) // self.cell_size][x] != 1):  # проверяем есть ли ход снизу
                         self.retset.add(115)  # добавляем код кнопки S, если ход есть
                     if (self.board[y][(cx - self.left - 1) // self.cell_size] != 1 and
-                        self.board[y][(cx - self.left + 24) // self.cell_size] != 1):  # проверяем есть ли ход слева
+                            self.board[y][(cx - self.left + 24) // self.cell_size] != 1):  # проверяем есть ли ход слева
                         self.retset.add(97)  # добавляем код кнопки A, если ход есть
                     if (self.board[(cy - self.left - 1) // self.cell_size][x] != 1 and
-                        self.board[(cy - self.left + 24) // self.cell_size][x] != 1):  # проверяем есть ли ход сверху
+                            self.board[(cy - self.left + 24) // self.cell_size][
+                                x] != 1):  # проверяем есть ли ход сверху
                         self.retset.add(119)  # добавляем код кнопки W, если ход есть
 
             print(self.retset)
