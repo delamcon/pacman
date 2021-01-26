@@ -31,7 +31,7 @@ class Pacman(pygame.sprite.Sprite):
         self.all_sprites = pygame.sprite.Group()
         self.main_pacman_sprite = pygame.sprite.Sprite()
         self.circ_pacman_sprite = pygame.sprite.Sprite()
-        self.main_pacman_sprite.image = pygame.image.load('data/pacmanleft.png')
+        self.main_pacman_sprite.image = pygame.image.load('data/newpac.png')
         self.circ_pacman_sprite.image = pygame.image.load('data/pcmcirc.png')
         self.main_pacman_sprite.rect = self.main_pacman_sprite.image.get_rect()
         self.circ_pacman_sprite.rect = self.circ_pacman_sprite.image.get_rect()
@@ -102,8 +102,7 @@ class Pacman(pygame.sprite.Sprite):
     def pacman_movement(self, key, cy, cx):  # key - проверяемый ход WASD в виде кода кнопок, (y, x) - координата клетки
         y = (cy - self.top) // self.cell_size
         x = (cx - self.left) // self.cell_size
-        keys = {0: 100, 1: 115, 2: 97, 3: 119}  #
-        count = 0  # счетчик для оборота по круговой окружности против часовой стрелки по 90градусов, сначала 0градусов
+        self.retset = set()
 
         horkeycheck = (key == 97 or key == 100)
         verkeycheck = (key == 119 or key == 115)
@@ -111,24 +110,19 @@ class Pacman(pygame.sprite.Sprite):
         xcellcheck = (cx - self.top) % self.cell_size == 0
 
         if (horkeycheck and ycellcheck) or (verkeycheck and xcellcheck):
-            for i in range(1, -2, -1):
-                if i != 0:
-                    if (self.board[y][(cx - self.left + 1) // self.cell_size] != 1 and
-                            self.board[y][
-                                (cx - self.left + 26) // self.cell_size] != 1):  # проверяем есть ли ход справа
-                        self.retset.add(100)  # добавляем код кнопки D, если ход есть
-                    if (self.board[(cy - self.left + 1) // self.cell_size][x] != 1 and
-                            self.board[(cy - self.left + 26) // self.cell_size][x] != 1):  # проверяем есть ли ход снизу
-                        self.retset.add(115)  # добавляем код кнопки S, если ход есть
-                    if (self.board[y][(cx - self.left - 1) // self.cell_size] != 1 and
-                            self.board[y][(cx - self.left + 24) // self.cell_size] != 1):  # проверяем есть ли ход слева
-                        self.retset.add(97)  # добавляем код кнопки A, если ход есть
-                    if (self.board[(cy - self.left - 1) // self.cell_size][x] != 1 and
-                            self.board[(cy - self.left + 24) // self.cell_size][
-                                x] != 1):  # проверяем есть ли ход сверху
-                        self.retset.add(119)  # добавляем код кнопки W, если ход есть
+            if (self.board[y][(cx - self.left + 26) // self.cell_size] != 1 and
+                     self.board[y][(cx - self.left + 26) // self.cell_size] != 2):  # проверяем есть ли ход справа
+                self.retset.add(100)  # добавляем код кнопки D, если ход есть
+            if (self.board[(cy - self.left + 26) // self.cell_size][x] != 1 and
+                     self.board[(cy - self.left + 26) // self.cell_size][x] != 2):  # проверяем есть ли ход снизу
+                self.retset.add(115)  # добавляем код кнопки S, если ход есть
+            if (self.board[y][(cx - self.left - 1) // self.cell_size] != 1 and
+                     self.board[y][(cx - self.left - 1) // self.cell_size] != 2):  # проверяем есть ли ход слева
+                self.retset.add(97)  # добавляем код кнопки A, если ход есть
+            if (self.board[(cy - self.left - 1) // self.cell_size][x] != 1 and
+                     self.board[(cy - self.left - 1) // self.cell_size][x] != 2):  # проверяем есть ли ход сверху
+                self.retset.add(119)  # добавляем код кнопки W, если ход есть
 
-            print(self.retset)
             if key in self.retset:  # проверяем допустим ли наш ход WASD
                 self.currentkey = key
                 pacman.pacman_move(key)  # вызываем метод самого движения
@@ -146,7 +140,9 @@ class Pacman(pygame.sprite.Sprite):
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0] - 1, self.PacmanCurrentPos[1])
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
+                # self.main_pacman_sprite = pygame.transform.rotate(self.main_pacman_sprite, 270)
                 self.all_sprites.draw(screen)
+
                 pygame.display.flip()
         elif key == 115:
             x = (self.PacmanCurrentPos[0] - self.left) // self.cell_size
@@ -158,6 +154,7 @@ class Pacman(pygame.sprite.Sprite):
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1] + 1)
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
+                # self.main_pacman_sprite = pygame.transform.rotate(self.main_pacman_sprite, 180)
                 self.all_sprites.draw(screen)
                 pygame.display.flip()
         elif key == 100:
@@ -170,6 +167,7 @@ class Pacman(pygame.sprite.Sprite):
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0] + 1, self.PacmanCurrentPos[1])
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
+                # self.main_pacman_sprite.angle = 0
                 self.all_sprites.draw(screen)
                 pygame.display.flip()
         elif key == 119:
@@ -182,6 +180,7 @@ class Pacman(pygame.sprite.Sprite):
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1] - 1)
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
+                # self.main_pacman_sprite.angle = pygame.transform.rotate(self.main_pacman_sprite, 90)
                 self.all_sprites.draw(screen)
                 pygame.display.flip()
 
