@@ -32,11 +32,13 @@ class Pacman(pygame.sprite.Sprite):
         self.main_pacman_sprite = pygame.sprite.Sprite()
         self.circ_pacman_sprite = pygame.sprite.Sprite()
         self.main_pacman_sprite.image = pygame.image.load('data/newpac.png')
-        self.circ_pacman_sprite.image = pygame.image.load('data/pcmcirc.png')
+        # self.circ_pacman_sprite.image = pygame.image.load('data/pcmcirc.png')
         self.main_pacman_sprite.rect = self.main_pacman_sprite.image.get_rect()
-        self.circ_pacman_sprite.rect = self.circ_pacman_sprite.image.get_rect()
+        # self.circ_pacman_sprite.rect = self.circ_pacman_sprite.image.get_rect()
         self.all_sprites.add(self.main_pacman_sprite)
-        self.all_sprites.add(self.circ_pacman_sprite)
+        # self.all_sprites.add(self.circ_pacman_sprite)
+        self.all_sprites.draw(screen)
+        pygame.display.flip()
 
         self.currentkey = 0
 
@@ -130,57 +132,56 @@ class Pacman(pygame.sprite.Sprite):
             pacman.pacman_move(self.currentkey)
 
     def pacman_move(self, key):
-        if key == 97:
+        if key == 97:  # A
             x = (self.PacmanCurrentPos[0] - 1 - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] - self.left) // self.cell_size
-            print(x, y, self.board[y][x], self.PacmanCurrentPos)
+            # print(x, y, self.board[y][x], self.PacmanCurrentPos)
             if self.board[y][x] != 1 and self.board[y][x] != 2:
                 pygame.draw.rect(self.screen, (0, 0, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
                                                           self.cell_size, self.cell_size), width=0)
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0] - 1, self.PacmanCurrentPos[1])
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
-                # self.main_pacman_sprite = pygame.transform.rotate(self.main_pacman_sprite, 270)
+                self.main_pacman_sprite.image = pygame.image.load('data/pacmanleft.png')
                 self.all_sprites.draw(screen)
-
                 pygame.display.flip()
-        elif key == 115:
+        elif key == 115:  # S
             x = (self.PacmanCurrentPos[0] - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] + 1 - self.left) // self.cell_size
-            print(x, y, self.board[y][x], self.PacmanCurrentPos)
+            # print(x, y, self.board[y][x], self.PacmanCurrentPos)
             if self.board[y][x] != 1 and self.board[y][x] != 2:
                 pygame.draw.rect(self.screen, (0, 0, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
                                                           self.cell_size, self.cell_size), width=0)
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1] + 1)
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
-                # self.main_pacman_sprite = pygame.transform.rotate(self.main_pacman_sprite, 180)
+                self.main_pacman_sprite.image = pygame.image.load('data/pcmdown.png')
                 self.all_sprites.draw(screen)
                 pygame.display.flip()
-        elif key == 100:
+        elif key == 100:  # D
             x = (self.PacmanCurrentPos[0] + 1 - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] - self.left) // self.cell_size
-            print(x, y, self.board[y][x], self.PacmanCurrentPos)
+            # print(x, y, self.board[y][x], self.PacmanCurrentPos)
             if self.board[y][x] != 1 and self.board[y][x] != 2:
                 pygame.draw.rect(self.screen, (0, 0, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
                                                           self.cell_size, self.cell_size), width=0)
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0] + 1, self.PacmanCurrentPos[1])
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
-                # self.main_pacman_sprite.angle = 0
+                self.main_pacman_sprite.image = pygame.image.load('data/pcmright.png')
                 self.all_sprites.draw(screen)
                 pygame.display.flip()
-        elif key == 119:
+        elif key == 119:  # W
             x = (self.PacmanCurrentPos[0] - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] - 1 - self.left) // self.cell_size
-            print(x, y, self.board[y][x], self.PacmanCurrentPos)
+            # print(x, y, self.board[y][x], self.PacmanCurrentPos)
             if self.board[y][x] != 1 and self.board[y][x] != 2:
                 pygame.draw.rect(self.screen, (0, 0, 0), (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1],
                                                           self.cell_size, self.cell_size), width=0)
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1] - 1)
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
-                # self.main_pacman_sprite.angle = pygame.transform.rotate(self.main_pacman_sprite, 90)
+                self.main_pacman_sprite.image = pygame.image.load('data/pcmup.png')
                 self.all_sprites.draw(screen)
                 pygame.display.flip()
 
@@ -198,7 +199,6 @@ if __name__ == '__main__':
     pacman = Pacman(screen)  # передаем только поверхность, потому что размеры известны
     pacman.render()
     pacman.nodes()
-    print(pacman.pacman_movement(119, 2, 8))  # проверка функции
     pygame.display.flip()
     PacmanCurrentKey = ''
 
