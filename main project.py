@@ -4,17 +4,7 @@ import os
 
 WINDOW_SIZE = WIDTH, HEIGHT = 475, 550  # размер поля (19, 22), размер клетки 25
 TICK = pygame.USEREVENT + 1  # событие, нужно для отсчета одного момента
-
-
-
-def load_image(name, colorkey=None):
-    fullname = os.path.join('data', name)
-    # если файл не существует, то выходим
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        sys.exit()
-    image = pygame.image.load(fullname)
-    return image
+PACMAN_MOTION = pygame.USEREVENT + 1  # событие для отсчета смены кадра
 
 
 class Pacman(pygame.sprite.Sprite):
@@ -28,11 +18,6 @@ class Pacman(pygame.sprite.Sprite):
         self.y = 12  # координаты пакмана во вложенном списке
         self.x = 9  # нужен для метода create_pacman в классе Pacman
         self.PacmanCurrentPos = (225, 300)  # сохраняет позицию пакмана, (225, 300) - позиция в начале игры в пикселях
-
-        '''self.Lmove = False
-        self.Rmove = False
-        self.Umove = False
-        self.Dmove = False'''
 
         self.all_sprites = pygame.sprite.Group()
         self.main_pacman_sprite = pygame.sprite.Sprite()
@@ -105,9 +90,6 @@ class Pacman(pygame.sprite.Sprite):
                     self.nodes_pos.add((x, y))
 
     def pacman_movement(self, key, cy, cx):  # key - проверяемый ход WASD в виде кода кнопок, (y, x) - координата клетки
-        self.count += 1
-        if self.count == 3:
-            self.count = 0
         y = (cy - self.top) // self.cell_size
         x = (cx - self.left) // self.cell_size
         self.retset = set()
@@ -137,13 +119,13 @@ class Pacman(pygame.sprite.Sprite):
         else:
             pacman.pacman_move(self.currentkey)
 
+    def motion_counting(self):
+        self.count += 1
+        if self.count == 3:
+            self.count = 0
+
     def pacman_move(self, key):
         if key == 97:  # A
-            '''self.Lmove = True
-            self.Rmove = False
-            self.Umove = False
-            self.Dmove = False'''
-            '''Lanimation = {0: 'data/pcmcirc.png', 1: 'data/pcmedleft.png', 2: 'data/pacmanleft.png'}'''
             x = (self.PacmanCurrentPos[0] - 1 - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] - self.left) // self.cell_size
             # print(x, y, self.board[y][x], self.PacmanCurrentPos)
@@ -154,6 +136,7 @@ class Pacman(pygame.sprite.Sprite):
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
                 if self.count % 3 == 0:
+                    # картинка меняется при опредленном числе счетчика
                     self.main_pacman_sprite.image = pygame.image.load('data/pcmcirc.png')
                     self.all_sprites.draw(screen)
                     pygame.display.flip()
@@ -166,10 +149,6 @@ class Pacman(pygame.sprite.Sprite):
                     self.all_sprites.draw(screen)
                     pygame.display.flip()
         elif key == 115:  # S
-            '''self.Lmove = False.png
-            self.Rmove = False
-            self.Umove = False
-            self.Dmove = True'''
             x = (self.PacmanCurrentPos[0] - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] + 1 - self.left) // self.cell_size
             # print(x, y, self.board[y][x], self.PacmanCurrentPos)
@@ -180,6 +159,7 @@ class Pacman(pygame.sprite.Sprite):
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
                 if self.count % 3 == 0:
+                    # картинка меняется при опредленном числе счетчика
                     self.main_pacman_sprite.image = pygame.image.load('data/pcmcirc.png')
                     self.all_sprites.draw(screen)
                     pygame.display.flip()
@@ -193,10 +173,6 @@ class Pacman(pygame.sprite.Sprite):
                     pygame.display.flip()
                 pygame.display.flip()
         elif key == 100:  # D
-            '''self.Lmove = False
-            self.Rmove = True
-            self.Umove = False
-            self.Dmove = False'''
             x = (self.PacmanCurrentPos[0] + 1 - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] - self.left) // self.cell_size
             # print(x, y, self.board[y][x], self.PacmanCurrentPos)
@@ -207,6 +183,7 @@ class Pacman(pygame.sprite.Sprite):
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
                 if self.count % 3 == 0:
+                    # картинка меняется при опредленном числе счетчика
                     self.main_pacman_sprite.image = pygame.image.load('data/pcmcirc.png')
                     self.all_sprites.draw(screen)
                     pygame.display.flip()
@@ -219,10 +196,6 @@ class Pacman(pygame.sprite.Sprite):
                     self.all_sprites.draw(screen)
                     pygame.display.flip()
         elif key == 119:  # W
-            '''self.Lmove = False
-            self.Rmove = False
-            self.Umove = True
-            self.Dmove = False'''
             x = (self.PacmanCurrentPos[0] - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] - 1 - self.left) // self.cell_size
             # print(x, y, self.board[y][x], self.PacmanCurrentPos)
@@ -233,6 +206,7 @@ class Pacman(pygame.sprite.Sprite):
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
                 if self.count % 3 == 0:
+                    # картинка меняется при опредленном числе счетчика
                     self.main_pacman_sprite.image = pygame.image.load('data/pcmcirc.png')
                     self.all_sprites.draw(screen)
                     pygame.display.flip()
@@ -253,7 +227,8 @@ if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode(WINDOW_SIZE)
 
-    pygame.time.set_timer(TICK, 20)
+    pygame.time.set_timer(TICK, 15)
+    pygame.time.set_timer(PACMAN_MOTION, 50)
     running = True
 
     pacman = Pacman(screen)  # передаем только поверхность, потому что размеры известны
@@ -287,5 +262,7 @@ if __name__ == '__main__':
             if event.type == TICK:
                 pacman_cur_pos = pacman.pacman_pos()
                 pacman.pacman_movement(PacmanCurrentKey, pacman_cur_pos[1], pacman_cur_pos[0])
+            if event.type == PACMAN_MOTION:
+                pacman.motion_counting()
         pygame.display.flip()
     pygame.quit()
