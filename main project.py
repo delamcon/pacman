@@ -229,10 +229,7 @@ class Dots(Pacman, pygame.sprite.Sprite):
         self.screen = screen
 
         self.dots = pygame.sprite.Group()
-        self.dot_sprite = pygame.sprite.Sprite()
-        self.dot_sprite.image = pygame.image.load('data/dot.png')
-        self.dot_sprite.rect = self.dot_sprite.image.get_rect()
-        self.dot_sprite.add(self.dots)
+
 
     def render_dots(self):
         for y in range(len(self.board)):
