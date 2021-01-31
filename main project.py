@@ -1,6 +1,7 @@
 import pygame
 import sys
 import os
+import random
 
 WINDOW_SIZE = WIDTH, HEIGHT = 475, 550  # размер поля (19, 22), размер клетки 25
 TICK = pygame.USEREVENT + 1  # событие, нужно для отсчета одного момента
@@ -24,7 +25,6 @@ class Pacman(pygame.sprite.Sprite):
         self.main_pacman_sprite.image = pygame.image.load('data/pacmanleft.png')
         self.main_pacman_sprite.rect = self.main_pacman_sprite.image.get_rect()
         self.main_pacman_sprite.add(self.all_sprites)
-        self.all_sprites.draw(screen)
         pygame.display.flip()
 
         self.currentkey = 0
@@ -37,7 +37,7 @@ class Pacman(pygame.sprite.Sprite):
         self.nodes_pos = set()
 
         self.board = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                      [1, 3, 0, 0, 3, 0, 0, 0, 3, 1, 3, 0, 0, 0, 3, 0, 0, 3, 1],
+                      [1, 4, 0, 0, 3, 0, 0, 0, 3, 1, 3, 0, 0, 0, 3, 0, 0, 4, 1],
                       [1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
                       [1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
                       [1, 3, 0, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 0, 3, 1],
@@ -46,7 +46,7 @@ class Pacman(pygame.sprite.Sprite):
                       [1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
                       [1, 3, 3, 1, 0, 1, 3, 0, 3, 0, 3, 0, 3, 1, 0, 1, 3, 3, 1],
                       [1, 1, 0, 1, 0, 1, 0, 1, 2, 2, 2, 1, 0, 1, 0, 1, 0, 1, 1],
-                      [1, 3, 3, 3, 3, 3, 3, 1, 0, 0, 0, 1, 3, 3, 3, 3, 3, 3, 1],
+                      [1, 3, 3, 3, 3, 3, 3, 1, 5, 5, 5, 1, 3, 3, 3, 3, 3, 3, 1],
                       [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
                       [1, 0, 1, 3, 3, 1, 3, 0, 0, 0, 0, 0, 3, 1, 3, 3, 1, 0, 1],
                       [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
@@ -56,7 +56,7 @@ class Pacman(pygame.sprite.Sprite):
                       [1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1],
                       [1, 3, 3, 0, 3, 1, 3, 0, 3, 1, 3, 0, 3, 1, 3, 0, 3, 3, 1],
                       [1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
-                      [1, 3, 0, 0, 0, 0, 0, 0, 3, 0, 3, 0, 0, 0, 0, 0, 0, 3, 1],
+                      [1, 4, 0, 0, 0, 0, 0, 0, 3, 0, 3, 0, 0, 0, 0, 0, 0, 4, 1],
                       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
         # 0 - клетка, по которой можно ходить,
         # 1 - стена
@@ -223,6 +223,34 @@ class Pacman(pygame.sprite.Sprite):
         return self.PacmanCurrentPos
 
 
+class Dots(Pacman, pygame.sprite.Sprite):
+    def __init__(self, screen):
+        super().__init__(screen)
+        self.screen = screen
+
+        self.dots = pygame.sprite.Group()
+        self.dot_sprite = pygame.sprite.Sprite()
+        self.dot_sprite.image = pygame.image.load('data/dot.png')
+        self.dot_sprite.rect = self.dot_sprite.image.get_rect()
+        self.dot_sprite.add(self.dots)
+
+    def render_dots(self):
+        for y in range(len(self.board)):
+            for x in range(len(self.board[y])):
+                if self.board[y][x] == 0 or self.board[y][x] == 3:
+                    self.dot = pygame.sprite.Sprite()
+                    self.dot.image = pygame.image.load('data/dot.png')
+                    self.dot.rect = self.dot.image.get_rect()
+                    self.dot.add(self.dots)
+
+                    self.dot.rect.x = x * self.cell_size + self.left
+                    self.dot.rect.y = y * self.cell_size + self.top
+                    self.dots.draw(self.screen)
+                    pygame.display.flip()
+
+
+
+
 if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode(WINDOW_SIZE)
@@ -236,6 +264,8 @@ if __name__ == '__main__':
     pacman.nodes()
     pygame.display.flip()
     PacmanCurrentKey = ''
+    dot = Dots(screen)
+    dot.render_dots()
 
     while running:
         for event in pygame.event.get():
