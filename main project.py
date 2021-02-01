@@ -120,9 +120,7 @@ class Pacman(pygame.sprite.Sprite):
             pacman.pacman_move(self.currentkey)
 
     def motion_counting(self):
-        self.count += 1
-        if self.count == 3:
-            self.count = 0
+        self.count = (self.count + 1) % 3
 
     def pacman_move(self, key):
         if key == 97:  # A
@@ -230,6 +228,12 @@ class Dots(Pacman, pygame.sprite.Sprite):
 
         self.dots = pygame.sprite.Group()
 
+        self.dotcount = 0
+
+    def dot_update(self):
+        if pygame.sprite.spritecollideany(self.main_pacman_sprite, self.dots) is not None:
+            self.dotcount += 10
+            print(self.dotcount)
 
     def render_dots(self):
         for y in range(len(self.board)):
@@ -240,20 +244,18 @@ class Dots(Pacman, pygame.sprite.Sprite):
                     self.dot.rect = self.dot.image.get_rect()
                     self.dot.add(self.dots)
 
-                    self.dot.rect.x = x * self.cell_size + self.left
-                    self.dot.rect.y = y * self.cell_size + self.top
+                    self.dot.rect.x = x * self.cell_size + self.left + 10
+                    self.dot.rect.y = y * self.cell_size + self.top + 10
                     self.dots.draw(self.screen)
                     pygame.display.flip()
-
-
 
 
 if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode(WINDOW_SIZE)
 
-    pygame.time.set_timer(TICK, 15)
-    pygame.time.set_timer(PACMAN_MOTION, 50)
+    pygame.time.set_timer(TICK, 50)
+    pygame.time.set_timer(PACMAN_MOTION, 200)
     running = True
 
     pacman = Pacman(screen)  # передаем только поверхность, потому что размеры известны
@@ -288,6 +290,7 @@ if __name__ == '__main__':
                     # вызов метода проверки возможности хода
             if event.type == TICK:
                 pacman_cur_pos = pacman.pacman_pos()
+                dot.dot_update()
                 pacman.pacman_movement(PacmanCurrentKey, pacman_cur_pos[1], pacman_cur_pos[0])
             if event.type == PACMAN_MOTION:
                 pacman.motion_counting()
