@@ -247,6 +247,30 @@ class Dots(Pacman, pygame.sprite.Sprite):
 
 
 
+class Ghosts(Pacman, pygame.sprite.Sprite):
+    def __init__(self, screen):
+        super().__init__(screen)
+        self.screen = screen
+
+        self.ghosts = pygame.sprite.Group()
+
+
+    def render_ghosts(self):
+        self.g_cian = pygame.sprite.Sprite()
+        self.g_cian.image = pygame.image.load('data/ghostcian.png')
+        self.g_cian.rect = self.g_cian.image.get_rect()
+        self.g_cian.add(self.ghosts)
+
+        self.g_red = pygame.sprite.Sprite()
+        self.g_red.image = pygame.image.load('data/ghostred.png')
+        self.g_red.rect = self.g_red.image.get_rect()
+        self.g_red.add(self.ghosts)
+
+        self.ghosts.draw(self.screen)
+
+        pygame.display.flip()
+
+
 
 if __name__ == '__main__':
     pygame.init()
@@ -263,6 +287,8 @@ if __name__ == '__main__':
     PacmanCurrentKey = ''
     dot = Dots(screen)
     dot.render_dots()
+    g_cian = Ghosts(screen)
+    g_cian.render_ghosts()
 
     while running:
         for event in pygame.event.get():
