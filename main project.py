@@ -18,7 +18,8 @@ class Pacman(pygame.sprite.Sprite):
 
         self.y = 12  # координаты пакмана во вложенном списке
         self.x = 9  # нужен для метода create_pacman в классе Pacman
-        self.PacmanCurrentPos = (225, 300)  # сохраняет позицию пакмана, (225, 300) - позиция в начале игры в пикселях
+        self.PacmanCurrentPos = (225, 300)
+        # сохраняет позицию пакмана, (225, 300) - позиция в начале игры в пикселях
 
         self.all_sprites = pygame.sprite.Group()
         self.main_pacman_sprite = pygame.sprite.Sprite()
@@ -228,6 +229,7 @@ class Dots(Pacman, pygame.sprite.Sprite):
         super().__init__(screen)
         self.screen = screen
 
+
         self.dots = pygame.sprite.Group()
 
 
@@ -251,6 +253,10 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
     def __init__(self, screen):
         super().__init__(screen)
         self.screen = screen
+        self.CianCurrentPos = (200, 250)
+        self.RedCurrentPos = (225, 200)
+        self.YellCurrentPos = (225, 250)
+        self.PinkCurrentPos = (250, 250)
 
         self.ghosts = pygame.sprite.Group()
 
@@ -259,12 +265,30 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
         self.g_cian = pygame.sprite.Sprite()
         self.g_cian.image = pygame.image.load('data/ghostcian.png')
         self.g_cian.rect = self.g_cian.image.get_rect()
+        self.g_cian.rect.x = self.CianCurrentPos[0]
+        self.g_cian.rect.y = self.CianCurrentPos[1]
         self.g_cian.add(self.ghosts)
 
         self.g_red = pygame.sprite.Sprite()
         self.g_red.image = pygame.image.load('data/ghostred.png')
         self.g_red.rect = self.g_red.image.get_rect()
+        self.g_red.rect.x = self.RedCurrentPos[0]
+        self.g_red.rect.y = self.RedCurrentPos[1]
         self.g_red.add(self.ghosts)
+
+        self.g_yell = pygame.sprite.Sprite()
+        self.g_yell.image = pygame.image.load('data/ghostyellow.png')
+        self.g_yell.rect = self.g_yell.image.get_rect()
+        self.g_yell.rect.x = self.YellCurrentPos[0]
+        self.g_yell.rect.y = self.YellCurrentPos[1]
+        self.g_yell.add(self.ghosts)
+
+        self.g_pink = pygame.sprite.Sprite()
+        self.g_pink.image = pygame.image.load('data/ghostpink.png')
+        self.g_pink.rect = self.g_pink.image.get_rect()
+        self.g_pink.rect.x = self.PinkCurrentPos[0]
+        self.g_pink.rect.y = self.PinkCurrentPos[1]
+        self.g_pink.add(self.ghosts)
 
         self.ghosts.draw(self.screen)
 
@@ -287,8 +311,8 @@ if __name__ == '__main__':
     PacmanCurrentKey = ''
     dot = Dots(screen)
     dot.render_dots()
-    g_cian = Ghosts(screen)
-    g_cian.render_ghosts()
+    ghosts = Ghosts(screen)
+    ghosts.render_ghosts()
 
     while running:
         for event in pygame.event.get():
