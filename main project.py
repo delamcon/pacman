@@ -139,7 +139,6 @@ class Pacman(pygame.sprite.Sprite):
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0] - 1, self.PacmanCurrentPos[1])
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
-                print(self.main_pacman_sprite.rect)
                 self.main_pacman_sprite.image = pygame.image.load(left[self.count])
                 self.all_sprites.draw(screen)
                 pygame.display.flip()
@@ -153,7 +152,6 @@ class Pacman(pygame.sprite.Sprite):
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1] + 1)
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
-                print(self.main_pacman_sprite.rect)
                 self.main_pacman_sprite.image = pygame.image.load(down[self.count])
                 self.all_sprites.draw(screen)
                 pygame.display.flip()
@@ -167,7 +165,6 @@ class Pacman(pygame.sprite.Sprite):
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0] + 1, self.PacmanCurrentPos[1])
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
-                print(self.main_pacman_sprite.rect)
                 self.main_pacman_sprite.image = pygame.image.load(right[self.count])
                 self.all_sprites.draw(screen)
                 pygame.display.flip()
@@ -181,7 +178,6 @@ class Pacman(pygame.sprite.Sprite):
                 self.PacmanCurrentPos = (self.PacmanCurrentPos[0], self.PacmanCurrentPos[1] - 1)
                 self.main_pacman_sprite.rect.x = self.PacmanCurrentPos[0]
                 self.main_pacman_sprite.rect.y = self.PacmanCurrentPos[1]
-                print(self.main_pacman_sprite.rect)
                 self.main_pacman_sprite.image = pygame.image.load(up[self.count])
                 self.all_sprites.draw(screen)
                 pygame.display.flip()
@@ -197,8 +193,11 @@ class Dots(Pacman, pygame.sprite.Sprite):
         self.dots = pygame.sprite.Group()
         self.dotcount = 0
 
-    def dot_update(self):
-        sprite = pygame.sprite.spritecollide(self.main_pacman_sprite, self.dots, True)
+    def dot_update(self, pacmanpos):
+        self.main_pacman_sprite.rect.x = pacmanpos[0]
+        self.main_pacman_sprite.rect.y = pacmanpos[1]
+        pygame.sprite.spritecollide(self.main_pacman_sprite, self.dots, True)
+        print(len(self.dots))
 
     def first_render_dots(self):
         for y in range(len(self.board)):
@@ -208,6 +207,7 @@ class Dots(Pacman, pygame.sprite.Sprite):
                     self.dot.image = pygame.image.load('data/dot.png')
                     self.dot.rect = self.dot.image.get_rect()
                     self.dot.add(self.dots)
+                    self.dot.add(self.all_sprites)
 
                     self.dot.rect.x = x * self.cell_size + self.left + 10
                     self.dot.rect.y = y * self.cell_size + self.top + 10
@@ -259,9 +259,10 @@ if __name__ == '__main__':
                     # вызов метода проверки возможности хода
             if event.type == TICK:
                 pacman_cur_pos = pacman.pacman_pos()
-                dot.dot_update()
-                dot.render_dots()
+
                 pacman.pacman_movement(PacmanCurrentKey, pacman_cur_pos[1], pacman_cur_pos[0])
+                dot.dot_update(pacman_cur_pos)
+                dot.render_dots()
             if event.type == PACMAN_MOTION:
                 pacman.motion_counting()
         pygame.display.flip()
