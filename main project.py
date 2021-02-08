@@ -228,10 +228,13 @@ class Dots(Pacman, pygame.sprite.Sprite):
     def __init__(self, screen):
         super().__init__(screen)
         self.screen = screen
-
-
         self.dots = pygame.sprite.Group()
 
+    def update(self, pos):
+        self.main_pacman_sprite.rect.x = pos[0]
+        self.main_pacman_sprite.rect.y = pos[1]
+        pygame.sprite.spritecollide(self.main_pacman_sprite, self.dots, True)
+        print(len(self.dots))
 
     def render_dots(self):
         for y in range(len(self.board)):
@@ -246,7 +249,6 @@ class Dots(Pacman, pygame.sprite.Sprite):
                     self.dot.rect.y = y * self.cell_size + self.top
                     self.dots.draw(self.screen)
                     pygame.display.flip()
-
 
 
 class Ghosts(Pacman, pygame.sprite.Sprite):
@@ -338,6 +340,8 @@ if __name__ == '__main__':
                     # вызов метода проверки возможности хода
             if event.type == TICK:
                 pacman_cur_pos = pacman.pacman_pos()
+
+                dot.update(pacman_cur_pos)
                 pacman.pacman_movement(PacmanCurrentKey, pacman_cur_pos[1], pacman_cur_pos[0])
             if event.type == PACMAN_MOTION:
                 pacman.motion_counting()
