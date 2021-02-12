@@ -1,5 +1,7 @@
 import pygame
-from random import randint
+import random
+
+random.seed(8)
 
 WINDOW_SIZE = WIDTH, HEIGHT = 475, 550  # размер поля (19, 22), размер клетки 25
 TICK = pygame.USEREVENT + 1  # событие, нужно для отсчета одного момента
@@ -43,9 +45,9 @@ class Pacman(pygame.sprite.Sprite):
                       [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
                       [1, 3, 0, 0, 3, 1, 3, 0, 3, 1, 3, 0, 3, 1, 3, 0, 0, 3, 1],
                       [1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
-                      [1, 3, 3, 1, 0, 1, 3, 0, 3, 0, 3, 0, 3, 1, 0, 1, 3, 3, 1],
+                      [1, 3, 3, 1, 0, 1, 3, 0, 3, 3, 3, 0, 3, 1, 0, 1, 3, 3, 1],
                       [1, 1, 0, 1, 0, 1, 0, 1, 2, 2, 2, 1, 0, 1, 0, 1, 0, 1, 1],
-                      [1, 3, 3, 3, 3, 3, 3, 1, 5, 5, 5, 1, 3, 3, 3, 3, 3, 3, 1],
+                      [1, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 1],
                       [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
                       [1, 0, 1, 3, 3, 1, 3, 0, 0, 0, 0, 0, 3, 1, 3, 3, 1, 0, 1],
                       [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
@@ -228,6 +230,10 @@ class Dots(Pacman, pygame.sprite.Sprite):
         self.screen = screen
         self.dots = pygame.sprite.Group()
 
+    def update_dots(self):
+        self.dots.draw(self.screen)
+        pygame.display.flip()
+
     def update(self, pos):
         self.main_pacman_sprite.rect.x = pos[0]
         self.main_pacman_sprite.rect.y = pos[1]
@@ -307,6 +313,8 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
         pygame.display.flip()
 
     def ghost_move(self, g):
+        pygame.draw.rect(self.screen, (0, 0, 0), (g.rect.x, g.rect.y,
+                                                  self.cell_size, self.cell_size), width=0)
         if self.ghostsmoves[g] == 'w':
             g.rect.y = g.rect.y - 1
         if self.ghostsmoves[g] == 'a':
@@ -332,39 +340,39 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
                 aflag = True
                 sflag = True
                 dflag = True
-                for i in range(1, 9):  #
-                    if (cx + i) <= 18 and (cx - i) >= 0:  #
-                        if self.board[cy][cx + i] in oklist and dflag:
-                            goodmoves.append('d')
-                            dflag = False
-                        elif self.board[cy][cx + i] == 1:  #
-                            dflag = False
-                        if self.board[cy][cx - i] in oklist and aflag:  #
-                            goodmoves.append('a')
-                            aflag = False
-                        elif self.board[cy][cx - i] == 1:  #
-                            aflag = False
+                if self.board[cy][cx] == 3:
+                    for i in range(1, 9):  #
+                        if (cx + i) <= 18 and (cx - i) >= 0:  #
+                            if self.board[cy][cx + i] in oklist and dflag:
+                                goodmoves.append('d')
+                                dflag = False
+                            elif self.board[cy][cx + i] == 1:  #
+                                dflag = False
+                            if self.board[cy][cx - i] in oklist and aflag:  #
+                                goodmoves.append('a')
+                                aflag = False
+                            elif self.board[cy][cx - i] == 1:  #
+                                aflag = False
 
-                    if (cy + i) <= 22 and (cy - i) >= 0:
-                        if self.board[cy + i][cx] in oklist and sflag:  #
-                            goodmoves.append('s')
-                            sflag = False
-                        elif self.board[cy + i][cx] == 1:  #
-                            sflag = False
-                        if self.board[cy - i][cx] in oklist and wflag:  #
-                            goodmoves.append('w')
-                            wflag = False
-                        elif self.board[cy - i][cx] == 1:  #
-                            wflag = False
+                        if (cy + i) <= 21 and (cy - i) >= 0:
+                            if self.board[cy + i][cx] in oklist and sflag:  #
+                                goodmoves.append('s')
+                                sflag = False
+                            elif self.board[cy + i][cx] == 1:  #
+                                sflag = False
+                            if self.board[cy - i][cx] in oklist and wflag:  #
+                                goodmoves.append('w')
+                                wflag = False
+                            elif self.board[cy - i][cx] == 1:  #
+                                wflag = False
                 if len(goodmoves) >= 1:  #
-                    move = randint(0, len(goodmoves) - 1)
+                    move = random.randint(0, len(goodmoves) - 1)
                     self.ghostsmoves[g] = goodmoves[move]
                 self.ghost_move(g)  #
-                print(goodmoves)
             else:  #
                 self.ghost_move(g)
             self.ghosts.draw(self.screen)  #
-            pygame.display.flip()
+            pygame.display.update()
 
 
 if __name__ == '__main__':
@@ -413,6 +421,7 @@ if __name__ == '__main__':
 
                 ghosts.ghost_calc()
                 dot.update(pacman_cur_pos)
+                dot.update_dots()
                 pacman.pacman_movement(PacmanCurrentKey, pacman_cur_pos[1], pacman_cur_pos[0])
             if event.type == PACMAN_MOTION:
                 pacman.motion_counting()
