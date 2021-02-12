@@ -1,7 +1,5 @@
 import pygame
-import sys
-import os
-import random
+from random import randint
 
 WINDOW_SIZE = WIDTH, HEIGHT = 475, 550  # размер поля (19, 22), размер клетки 25
 TICK = pygame.USEREVENT + 1  # событие, нужно для отсчета одного момента
@@ -234,7 +232,6 @@ class Dots(Pacman, pygame.sprite.Sprite):
         self.main_pacman_sprite.rect.x = pos[0]
         self.main_pacman_sprite.rect.y = pos[1]
         pygame.sprite.spritecollide(self.main_pacman_sprite, self.dots, True)
-        print(len(self.dots))
 
     def render_dots(self):
         for y in range(len(self.board)):
@@ -259,9 +256,11 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
         self.RedCurrentPos = (225, 200)
         self.YellCurrentPos = (225, 250)
         self.PinkCurrentPos = (250, 250)
-
         self.ghosts = pygame.sprite.Group()
+        self.dots = Dots(self.screen)
 
+        self.ghostpos = []
+        self.ghostsmoves = {}
 
     def render_ghosts(self):
         self.g_cian = pygame.sprite.Sprite()
@@ -271,12 +270,18 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
         self.g_cian.rect.y = self.CianCurrentPos[1]
         self.g_cian.add(self.ghosts)
 
+        self.ghostsmoves[self.g_cian] = ''
+        self.ghostpos.append(self.g_cian)
+
         self.g_red = pygame.sprite.Sprite()
         self.g_red.image = pygame.image.load('data/ghostred.png')
         self.g_red.rect = self.g_red.image.get_rect()
         self.g_red.rect.x = self.RedCurrentPos[0]
         self.g_red.rect.y = self.RedCurrentPos[1]
         self.g_red.add(self.ghosts)
+
+        self.ghostsmoves[self.g_red] = ''
+        self.ghostpos.append(self.g_red)
 
         self.g_yell = pygame.sprite.Sprite()
         self.g_yell.image = pygame.image.load('data/ghostyellow.png')
@@ -285,6 +290,9 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
         self.g_yell.rect.y = self.YellCurrentPos[1]
         self.g_yell.add(self.ghosts)
 
+        self.ghostsmoves[self.g_yell] = ''
+        self.ghostpos.append(self.g_yell)
+
         self.g_pink = pygame.sprite.Sprite()
         self.g_pink.image = pygame.image.load('data/ghostpink.png')
         self.g_pink.rect = self.g_pink.image.get_rect()
@@ -292,10 +300,71 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
         self.g_pink.rect.y = self.PinkCurrentPos[1]
         self.g_pink.add(self.ghosts)
 
-        self.ghosts.draw(self.screen)
+        self.ghostsmoves[self.g_pink] = ''
+        self.ghostpos.append(self.g_pink)
 
+        self.ghosts.draw(self.screen)
         pygame.display.flip()
 
+    def ghost_move(self, g):
+        if self.ghostsmoves[g] == 'w':
+            g.rect.y = g.rect.y - 1
+        if self.ghostsmoves[g] == 'a':
+            g.rect.x = g.rect.x - 1
+        if self.ghostsmoves[g] == 's':
+            g.rect.y = g.rect.y + 1
+        if self.ghostsmoves[g] == 'd':
+            g.rect.x = g.rect.x + 1
+        self.ghosts.draw(self.screen)
+        pygame.display.flip()
+
+    def ghost_calc(self):
+        for g in self.ghostpos:
+            x = g.rect.x  # координаты призрака
+            y = g.rect.y  # в пикселях по х и у
+            cx = (x - self.left) // self.cell_size  # координаты призрака
+            cy = (y - self.top) // self.cell_size  # в клетках по х и у
+
+            if (x - self.left) % self.cell_size == 0 and (y - self.top) % self.cell_size == 0:
+                oklist = {2, 3}  # клетки по которым призрак может идти
+                goodmoves = []  # ходы, которые допустимы на той или иной клетки
+                wflag = True
+                aflag = True
+                sflag = True
+                dflag = True
+                for i in range(1, 9):  #
+                    if (cx + i) <= 18 and (cx - i) >= 0:  #
+                        if self.board[cy][cx + i] in oklist and dflag:
+                            goodmoves.append('d')
+                            dflag = False
+                        elif self.board[cy][cx + i] == 1:  #
+                            dflag = False
+                        if self.board[cy][cx - i] in oklist and aflag:  #
+                            goodmoves.append('a')
+                            aflag = False
+                        elif self.board[cy][cx - i] == 1:  #
+                            aflag = False
+
+                    if (cy + i) <= 22 and (cy - i) >= 0:
+                        if self.board[cy + i][cx] in oklist and sflag:  #
+                            goodmoves.append('s')
+                            sflag = False
+                        elif self.board[cy + i][cx] == 1:  #
+                            sflag = False
+                        if self.board[cy - i][cx] in oklist and wflag:  #
+                            goodmoves.append('w')
+                            wflag = False
+                        elif self.board[cy - i][cx] == 1:  #
+                            wflag = False
+                if len(goodmoves) >= 1:  #
+                    move = randint(0, len(goodmoves) - 1)
+                    self.ghostsmoves[g] = goodmoves[move]
+                self.ghost_move(g)  #
+                print(goodmoves)
+            else:  #
+                self.ghost_move(g)
+            self.ghosts.draw(self.screen)  #
+            pygame.display.flip()
 
 
 if __name__ == '__main__':
@@ -315,6 +384,7 @@ if __name__ == '__main__':
     dot.render_dots()
     ghosts = Ghosts(screen)
     ghosts.render_ghosts()
+    ghosts.ghost_calc()
 
     while running:
         for event in pygame.event.get():
@@ -341,6 +411,7 @@ if __name__ == '__main__':
             if event.type == TICK:
                 pacman_cur_pos = pacman.pacman_pos()
 
+                ghosts.ghost_calc()
                 dot.update(pacman_cur_pos)
                 pacman.pacman_movement(PacmanCurrentKey, pacman_cur_pos[1], pacman_cur_pos[0])
             if event.type == PACMAN_MOTION:
