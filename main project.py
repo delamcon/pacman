@@ -1,9 +1,9 @@
 import pygame
 import random
 
-random.seed(8)
+random.seed(33) # 23 24
 
-WINDOW_SIZE = WIDTH, HEIGHT = 475, 550  # размер поля (19, 22), размер клетки 25
+WINDOW_SIZE = WIDTH, HEIGHT = 575, 550  # размер поля (19, 22), размер клетки 25
 TICK = pygame.USEREVENT + 1  # событие, нужно для отсчета одного момента
 PACMAN_MOTION = pygame.USEREVENT + 1  # событие для отсчета смены кадра
 
@@ -25,7 +25,6 @@ class Pacman(pygame.sprite.Sprite):
         self.main_pacman_sprite = pygame.sprite.Sprite()
         self.main_pacman_sprite.image = pygame.image.load('data/pacmanleft.png')
         self.main_pacman_sprite.rect = self.main_pacman_sprite.image.get_rect()
-        self.main_pacman_sprite.add(self.all_sprites)
         pygame.display.flip()
 
         self.currentkey = 0
@@ -38,7 +37,7 @@ class Pacman(pygame.sprite.Sprite):
         self.nodes_pos = set()
 
         self.board = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                      [1, 4, 0, 0, 3, 0, 0, 0, 3, 1, 3, 0, 0, 0, 3, 0, 0, 4, 1],
+                      [1, 3, 0, 0, 3, 0, 0, 0, 3, 1, 3, 0, 0, 0, 3, 0, 0, 3, 1],
                       [1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
                       [1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
                       [1, 3, 0, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 0, 3, 1],
@@ -47,7 +46,7 @@ class Pacman(pygame.sprite.Sprite):
                       [1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
                       [1, 3, 3, 1, 0, 1, 3, 0, 3, 3, 3, 0, 3, 1, 0, 1, 3, 3, 1],
                       [1, 1, 0, 1, 0, 1, 0, 1, 2, 2, 2, 1, 0, 1, 0, 1, 0, 1, 1],
-                      [1, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 1],
+                      [1, 3, 3, 3, 3, 3, 3, 1, 4, 4, 4, 1, 3, 3, 3, 3, 3, 3, 1],
                       [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
                       [1, 0, 1, 3, 3, 1, 3, 0, 0, 0, 0, 0, 3, 1, 3, 3, 1, 0, 1],
                       [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
@@ -57,7 +56,7 @@ class Pacman(pygame.sprite.Sprite):
                       [1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1],
                       [1, 3, 3, 0, 3, 1, 3, 0, 3, 1, 3, 0, 3, 1, 3, 0, 3, 3, 1],
                       [1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
-                      [1, 4, 0, 0, 0, 0, 0, 0, 3, 0, 3, 0, 0, 0, 0, 0, 0, 4, 1],
+                      [1, 3, 0, 0, 0, 0, 0, 0, 3, 0, 3, 0, 0, 0, 0, 0, 0, 3, 1],
                       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
         # 0 - клетка, по которой можно ходить,
         # 1 - стена
@@ -230,6 +229,8 @@ class Dots(Pacman, pygame.sprite.Sprite):
         self.screen = screen
         self.dots = pygame.sprite.Group()
 
+        self.score = 0
+
     def update_dots(self):
         self.dots.draw(self.screen)
         pygame.display.flip()
@@ -237,7 +238,22 @@ class Dots(Pacman, pygame.sprite.Sprite):
     def update(self, pos):
         self.main_pacman_sprite.rect.x = pos[0]
         self.main_pacman_sprite.rect.y = pos[1]
+
+        if pygame.sprite.spritecollideany(self.main_pacman_sprite, self.dots):
+            self.score += 1
+            self.score_calc()
         pygame.sprite.spritecollide(self.main_pacman_sprite, self.dots, True)
+
+    def score_calc(self):
+        font = pygame.font.Font(None, 25)
+        text = font.render(f"score {self.score * 10}", True, 'yellow')
+        place = text.get_rect(
+            center=(525, 20))
+        text_w = text.get_width()
+        text_h = text.get_height()
+        pygame.draw.rect(screen, (0, 0, 0), (place[0], place[1],
+                                             text_w, text_h), 0)
+        screen.blit(text, place)
 
     def render_dots(self):
         for y in range(len(self.board)):
@@ -264,6 +280,8 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
         self.PinkCurrentPos = (250, 250)
         self.ghosts = pygame.sprite.Group()
         self.dots = Dots(self.screen)
+
+        self.pink_cell = [(250, 225), (225, 225), (200, 225)]
 
         self.ghostpos = []
         self.ghostsmoves = {}
@@ -334,37 +352,42 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
             cy = (y - self.top) // self.cell_size  # в клетках по х и у
 
             if (x - self.left) % self.cell_size == 0 and (y - self.top) % self.cell_size == 0:
-                oklist = {2, 3}  # клетки по которым призрак может идти
+                oklist = {2, 3, 4}  # клетки по которым призрак может идти
+                notokey = {1}
                 goodmoves = []  # ходы, которые допустимы на той или иной клетки
                 wflag = True
                 aflag = True
                 sflag = True
                 dflag = True
-                if self.board[cy][cx] == 3:
+                if self.board[cy][cx] == 3 or self.board[cy][cx] == 4:
+                    if self.board[cy + 1][cx] == 2:
+                        oklist.remove(2)
+                        notokey.add(2)
                     for i in range(1, 9):  #
                         if (cx + i) <= 18 and (cx - i) >= 0:  #
                             if self.board[cy][cx + i] in oklist and dflag:
                                 goodmoves.append('d')
                                 dflag = False
-                            elif self.board[cy][cx + i] == 1:  #
+                            elif self.board[cy][cx + i] in notokey:  #
                                 dflag = False
                             if self.board[cy][cx - i] in oklist and aflag:  #
                                 goodmoves.append('a')
                                 aflag = False
-                            elif self.board[cy][cx - i] == 1:  #
+                            elif self.board[cy][cx - i] in notokey:  #
                                 aflag = False
 
                         if (cy + i) <= 21 and (cy - i) >= 0:
                             if self.board[cy + i][cx] in oklist and sflag:  #
                                 goodmoves.append('s')
                                 sflag = False
-                            elif self.board[cy + i][cx] == 1:  #
+                            elif self.board[cy + i][cx] in notokey:  #
                                 sflag = False
                             if self.board[cy - i][cx] in oklist and wflag:  #
                                 goodmoves.append('w')
                                 wflag = False
-                            elif self.board[cy - i][cx] == 1:  #
+                            elif self.board[cy - i][cx] in notokey:  #
                                 wflag = False
+
                 if len(goodmoves) >= 1:  #
                     move = random.randint(0, len(goodmoves) - 1)
                     self.ghostsmoves[g] = goodmoves[move]
@@ -373,26 +396,39 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
                 self.ghost_move(g)
             self.ghosts.draw(self.screen)  #
             pygame.display.update()
+        for p in self.pink_cell:
+            pygame.draw.rect(self.screen, (252, 15, 192), (p[0], p[1],
+                                self.cell_size, self.cell_size), width=0)
+
+    def collide_pacman(self, pos):
+        self.main_pacman_sprite.rect.x = pos[0]
+        self.main_pacman_sprite.rect.y = pos[1]
+        if pygame.sprite.spritecollideany(self.main_pacman_sprite, self.ghosts):
+            return True
+        else:
+            return False
 
 
 if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode(WINDOW_SIZE)
 
-    pygame.time.set_timer(TICK, 15)
-    pygame.time.set_timer(PACMAN_MOTION, 50)
     running = True
 
     pacman = Pacman(screen)  # передаем только поверхность, потому что размеры известны
     pacman.render()
     pacman.nodes()
-    pygame.display.flip()
+
     PacmanCurrentKey = ''
     dot = Dots(screen)
+    dot.score_calc()
     dot.render_dots()
+    pygame.time.set_timer(TICK, 15)
+    pygame.time.set_timer(PACMAN_MOTION, 35)
     ghosts = Ghosts(screen)
     ghosts.render_ghosts()
     ghosts.ghost_calc()
+    pygame.display.flip()
 
     while running:
         for event in pygame.event.get():
@@ -423,6 +459,21 @@ if __name__ == '__main__':
                 dot.update(pacman_cur_pos)
                 dot.update_dots()
                 pacman.pacman_movement(PacmanCurrentKey, pacman_cur_pos[1], pacman_cur_pos[0])
+                if ghosts.collide_pacman(pacman_cur_pos):
+                    pygame.time.set_timer(TICK, 0)
+                    pygame.time.set_timer(PACMAN_MOTION, 0)
+
+                    font = pygame.font.Font(None, 50)
+                    text = font.render("Game Over", True, (232, 72, 167))
+                    text_x = 112
+                    text_y = 150
+                    place = text.get_rect(
+                        center=(237, 275))
+                    text_w = text.get_width()
+                    text_h = text.get_height()
+                    pygame.draw.rect(screen, (0, 0, 0), (place[0], place[1],
+                                                           text_w, text_h), 0)
+                    screen.blit(text, place)
             if event.type == PACMAN_MOTION:
                 pacman.motion_counting()
         pygame.display.flip()
