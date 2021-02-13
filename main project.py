@@ -25,6 +25,7 @@ class Pacman(pygame.sprite.Sprite):
         self.main_pacman_sprite = pygame.sprite.Sprite()
         self.main_pacman_sprite.image = pygame.image.load('data/pacmanleft.png')
         self.main_pacman_sprite.rect = self.main_pacman_sprite.image.get_rect()
+        self.main_pacman_sprite.add(self.all_sprites)
         pygame.display.flip()
 
         self.currentkey = 0
