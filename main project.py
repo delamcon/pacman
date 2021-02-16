@@ -7,6 +7,7 @@ PACMAN_MOTION = pygame.USEREVENT + 1  # событие для отсчета с�
 
 
 class Pacman(pygame.sprite.Sprite):
+    # основной класс, где прописан рендер поля и логика движения пакмана
     def __init__(self, screen):
         super().__init__()
         self.retset = set()  # множество для записи допустимых кнопок
@@ -24,16 +25,16 @@ class Pacman(pygame.sprite.Sprite):
         self.main_pacman_sprite.image = pygame.image.load('data/pacmanleft.png')
         self.main_pacman_sprite.rect = self.main_pacman_sprite.image.get_rect()
         self.main_pacman_sprite.add(self.all_sprites)
+        # спрайт пакмана
         pygame.display.flip()
 
         self.currentkey = 0
-        self.count = 0
+        # для проверки возможности хода
+        self.count = 0  # счетчик для смены спарйта пакмана
 
-        self.left = 0  # отступ с левого верхнего края по оси x (пока нет счета очков, будет 0)
-        self.top = 0  # отступ с левого верхнего края по оси y (пока нет счета очков, будет 0)
+        self.left = 0  # отступ с левого верхнего края по оси x
+        self.top = 0  # отступ с левого верхнего края по оси y
         self.cell_size = 25  # размер клетки в пикселях
-
-        self.nodes_pos = set()
 
         self.board = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                       [1, 0, 0, 0, 3, 0, 0, 0, 3, 1, 3, 0, 0, 0, 3, 0, 0, 0, 1],
@@ -63,6 +64,7 @@ class Pacman(pygame.sprite.Sprite):
         # 3 - узел, расходжение путей
 
     def render(self):
+        # рендер поля
         for x in range(self.width):
             for y in range(self.height):
                 if self.board[y][x] == 0 or self.board[y][x] == 3:
@@ -79,15 +81,18 @@ class Pacman(pygame.sprite.Sprite):
                                                                    self.cell_size, self.cell_size), width=0)
 
 
-    def pacman_movement(self, key, cy, cx):  # key - проверяемый ход WASD в виде кода кнопок, (y, x) - координата клетки
+    def pacman_movement(self, key, cy, cx):
+        # key - проверяемый ход WASD в виде кода кнопок, (y, x) - координата клетки
         y = (cy - self.top) // self.cell_size
         x = (cx - self.left) // self.cell_size
         self.retset = set()
 
         horkeycheck = (key == 97 or key == 100)
         verkeycheck = (key == 119 or key == 115)
+        # вертикальные и горизонтальные ходы
         ycellcheck = (cy - self.top) % self.cell_size == 0
         xcellcheck = (cx - self.top) % self.cell_size == 0
+        # координаты клеток
 
         if (horkeycheck and ycellcheck) or (verkeycheck and xcellcheck):
             if (self.board[y][(cx - self.left + 26) // self.cell_size] != 1 and
@@ -110,11 +115,14 @@ class Pacman(pygame.sprite.Sprite):
             pacman.pacman_move(self.currentkey)
 
     def motion_counting(self):
+        # счетчик для смены спрайта пакмана
         self.count += 1
         if self.count == 3:
             self.count = 0
 
+
     def pacman_move(self, key):
+        # непосредственно движение пакмана
         if key == 97:  # A
             x = (self.PacmanCurrentPos[0] - 1 - self.left) // self.cell_size
             y = (self.PacmanCurrentPos[1] - self.left) // self.cell_size
@@ -210,10 +218,12 @@ class Pacman(pygame.sprite.Sprite):
                     pygame.display.flip()
 
     def pacman_pos(self):
+        # для главного игрового цикла
         return self.PacmanCurrentPos
 
 
 class Dots(Pacman, pygame.sprite.Sprite):
+    # класс точечек, которые ест пакман
     def __init__(self, screen):
         super().__init__(screen)
         self.screen = screen
@@ -221,9 +231,26 @@ class Dots(Pacman, pygame.sprite.Sprite):
 
         self.score = 0
 
+    def render_dots(self):
+        # рендер точечек
+        for y in range(len(self.board)):
+            for x in range(len(self.board[y])):
+                if self.board[y][x] == 0 or self.board[y][x] == 3:
+                    self.dot = pygame.sprite.Sprite()
+                    self.dot.image = pygame.image.load('data/dot.png')
+                    # спрайт точечек
+                    self.dot.rect = self.dot.image.get_rect()
+                    self.dot.add(self.dots)
+
+                    self.dot.rect.x = x * self.cell_size + self.left
+                    self.dot.rect.y = y * self.cell_size + self.top
+                    self.dots.draw(self.screen)
+                    pygame.display.flip()
+
     def update_dots(self):
         self.dots.draw(self.screen)
         pygame.display.flip()
+        # постоянное обновление точечек
 
     def update(self, pos):
         self.main_pacman_sprite.rect.x = pos[0]
@@ -233,10 +260,12 @@ class Dots(Pacman, pygame.sprite.Sprite):
             self.score += 1
             self.score_calc()
         pygame.sprite.spritecollide(self.main_pacman_sprite, self.dots, True)
+        # если пакман сталкивается с точкой - 10 очков и точка исчезает
 
     def score_calc(self):
+        # очки игрока
         font = pygame.font.Font(None, 25)
-        text = font.render(f"score {self.score * 10}", True, 'yellow')
+        text = font.render(f"score {self.score * 10}", True, (255, 255, 0))
         place = text.get_rect(
             center=(525, 20))
         text_w = text.get_width()
@@ -246,24 +275,12 @@ class Dots(Pacman, pygame.sprite.Sprite):
         screen.blit(text, place)
 
     def score_update(self):
-        return self.score
-
-    def render_dots(self):
-        for y in range(len(self.board)):
-            for x in range(len(self.board[y])):
-                if self.board[y][x] == 0 or self.board[y][x] == 3:
-                    self.dot = pygame.sprite.Sprite()
-                    self.dot.image = pygame.image.load('data/dot.png')
-                    self.dot.rect = self.dot.image.get_rect()
-                    self.dot.add(self.dots)
-
-                    self.dot.rect.x = x * self.cell_size + self.left
-                    self.dot.rect.y = y * self.cell_size + self.top
-                    self.dots.draw(self.screen)
-                    pygame.display.flip()
+        # для главного игрового цикла
+        return self.score * 10
 
 
 class Ghosts(Pacman, pygame.sprite.Sprite):
+    # класс привидений, где прописана вся их логика
     def __init__(self, screen):
         super().__init__(screen)
         self.screen = screen
@@ -271,6 +288,7 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
         self.RedCurrentPos = (225, 200)
         self.YellCurrentPos = (225, 250)
         self.PinkCurrentPos = (250, 250)
+        # начальное положение привидений
         self.ghosts = pygame.sprite.Group()
         self.dots = Dots(self.screen)
 
@@ -280,6 +298,7 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
         self.ghostsmoves = {}
 
     def render_ghosts(self):
+        # рендер всех привидений
         self.g_cian = pygame.sprite.Sprite()
         self.g_cian.image = pygame.image.load('data/ghostcian.png')
         self.g_cian.rect = self.g_cian.image.get_rect()
@@ -347,7 +366,8 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
             if (x - self.left) % self.cell_size == 0 and (y - self.top) % self.cell_size == 0:
                 oklist = {2, 3, 4}  # клетки по которым призрак может идти
                 notokey = {1}
-                goodmoves = []  # ходы, которые допустимы на той или иной клетки
+                goodmoves = []
+                # ходы, которые допустимы на той или иной клетки
                 wflag = True
                 aflag = True
                 sflag = True
@@ -394,12 +414,14 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
                                 self.cell_size, self.cell_size), width=0)
 
     def collide_pacman(self, pos):
+        # столкновение с пакманом
         self.main_pacman_sprite.rect.x = pos[0]
         self.main_pacman_sprite.rect.y = pos[1]
         if pygame.sprite.spritecollideany(self.main_pacman_sprite, self.ghosts):
             return True
         else:
             return False
+        # "жизнь" у пакмана только одна, чтобы было сложней))
 
 
 if __name__ == '__main__':
@@ -408,7 +430,8 @@ if __name__ == '__main__':
 
     running = True
 
-    pacman = Pacman(screen)  # передаем только поверхность, потому что размеры известны
+    pacman = Pacman(screen)
+    # передаем только поверхность, потому что размеры известны
     pacman.render()
 
     PacmanCurrentKey = ''
@@ -454,6 +477,7 @@ if __name__ == '__main__':
                 dot.update_dots()
                 pacman.pacman_movement(PacmanCurrentKey, pacman_cur_pos[1], pacman_cur_pos[0])
                 if ghosts.collide_pacman(pacman_cur_pos):
+                    # в случае столкновения - конец игры, проигрыш
                     pygame.time.set_timer(TICK, 0)
                     pygame.time.set_timer(PACMAN_MOTION, 0)
 
@@ -469,6 +493,7 @@ if __name__ == '__main__':
                                                            text_w, text_h), 0)
                     screen.blit(text, place)
                 if score == 2050:
+                    # если съедены все точки - конец игры, победа
                     pygame.time.set_timer(TICK, 0)
                     pygame.time.set_timer(PACMAN_MOTION, 0)
 
