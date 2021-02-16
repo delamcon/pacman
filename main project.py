@@ -1,8 +1,6 @@
 import pygame
 import random
 
-random.seed(33) # 23 24
-
 WINDOW_SIZE = WIDTH, HEIGHT = 575, 550  # размер поля (19, 22), размер клетки 25
 TICK = pygame.USEREVENT + 1  # событие, нужно для отсчета одного момента
 PACMAN_MOTION = pygame.USEREVENT + 1  # событие для отсчета смены кадра
