@@ -245,6 +245,9 @@ class Dots(Pacman, pygame.sprite.Sprite):
                                              text_w, text_h), 0)
         screen.blit(text, place)
 
+    def score_update(self):
+        return self.score
+
     def render_dots(self):
         for y in range(len(self.board)):
             for x in range(len(self.board[y])):
@@ -444,6 +447,8 @@ if __name__ == '__main__':
             if event.type == TICK:
                 pacman_cur_pos = pacman.pacman_pos()
 
+                score = dot.score_update()
+
                 ghosts.ghost_calc()
                 dot.update(pacman_cur_pos)
                 dot.update_dots()
@@ -462,6 +467,21 @@ if __name__ == '__main__':
                     text_h = text.get_height()
                     pygame.draw.rect(screen, (0, 0, 0), (place[0], place[1],
                                                            text_w, text_h), 0)
+                    screen.blit(text, place)
+                if score == 2050:
+                    pygame.time.set_timer(TICK, 0)
+                    pygame.time.set_timer(PACMAN_MOTION, 0)
+
+                    font = pygame.font.Font(None, 50)
+                    text = font.render("You win!", True, (232, 72, 167))
+                    text_x = 112
+                    text_y = 150
+                    place = text.get_rect(
+                        center=(237, 275))
+                    text_w = text.get_width()
+                    text_h = text.get_height()
+                    pygame.draw.rect(screen, (0, 0, 0), (place[0], place[1],
+                                                         text_w, text_h), 0)
                     screen.blit(text, place)
             if event.type == PACMAN_MOTION:
                 pacman.motion_counting()
