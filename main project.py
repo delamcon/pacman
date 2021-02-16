@@ -65,7 +65,7 @@ class Pacman(pygame.sprite.Sprite):
     def render(self):
         for x in range(self.width):
             for y in range(self.height):
-                if self.board[y][x] == 0:
+                if self.board[y][x] == 0 or self.board[y][x] == 3:
                     pygame.draw.rect(self.screen, (0, 0, 0), (x * self.cell_size + self.left,
                                                               y * self.cell_size + self.top,
                                                               self.cell_size, self.cell_size), width=0)
@@ -77,16 +77,7 @@ class Pacman(pygame.sprite.Sprite):
                     pygame.draw.rect(self.screen, (252, 15, 192), (x * self.cell_size + self.left,
                                                                    y * self.cell_size + self.top,
                                                                    self.cell_size, self.cell_size), width=0)
-                """if self.board[y][x] == 3:
-                    pygame.draw.rect(self.screen, (26, 185, 192), (x * self.cell_size + self.left,
-                                                                   y * self.cell_size + self.top,
-                                                                   self.cell_size, self.cell_size), width=0)"""
 
-    def nodes(self):
-        for x in range(self.width):
-            for y in range(self.height):
-                if self.board[y][x] == 3:
-                    self.nodes_pos.add((x, y))
 
     def pacman_movement(self, key, cy, cx):  # key - проверяемый ход WASD в виде кода кнопок, (y, x) - координата клетки
         y = (cy - self.top) // self.cell_size
