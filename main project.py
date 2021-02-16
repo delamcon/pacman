@@ -407,7 +407,6 @@ if __name__ == '__main__':
 
     pacman = Pacman(screen)  # передаем только поверхность, потому что размеры известны
     pacman.render()
-    pacman.nodes()
 
     PacmanCurrentKey = ''
     dot = Dots(screen)
