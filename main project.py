@@ -343,6 +343,7 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
         pygame.display.flip()
 
     def ghost_move(self, g):
+        # перемещение привидений
         pygame.draw.rect(self.screen, (0, 0, 0), (g.rect.x, g.rect.y,
                                                   self.cell_size, self.cell_size), width=0)
         if self.ghostsmoves[g] == 'w':
@@ -372,48 +373,50 @@ class Ghosts(Pacman, pygame.sprite.Sprite):
                 aflag = True
                 sflag = True
                 dflag = True
-                if self.board[cy][cx] == 3 or self.board[cy][cx] == 4:
+                # выше прописаны флаги, которые меняются на False, когда в стороне
+                # найдено перепутье в лабиринте, где можно повернуть
+                if self.board[cy][cx] == 3 or self.board[cy][cx] == 4:  # проверка, находится ли призрак в узле
                     if self.board[cy + 1][cx] == 2:
                         oklist.remove(2)
                         notokey.add(2)
-                    for i in range(1, 9):  #
-                        if (cx + i) <= 18 and (cx - i) >= 0:  #
+                    for i in range(1, 9):  # нахождение узла в близжайших 9-ти клетках
+                        if (cx + i) <= 18 and (cx - i) >= 0:
                             if self.board[cy][cx + i] in oklist and dflag:
-                                goodmoves.append('d')
+                                goodmoves.append('d')  # добавлем букву хода, если ход возможен
                                 dflag = False
-                            elif self.board[cy][cx + i] in notokey:  #
+                            elif self.board[cy][cx + i] in notokey:
                                 dflag = False
-                            if self.board[cy][cx - i] in oklist and aflag:  #
-                                goodmoves.append('a')
+                            if self.board[cy][cx - i] in oklist and aflag:
+                                goodmoves.append('a')  # добавлем букву хода, если ход возможен
                                 aflag = False
-                            elif self.board[cy][cx - i] in notokey:  #
+                            elif self.board[cy][cx - i] in notokey:
                                 aflag = False
 
                         if (cy + i) <= 21 and (cy - i) >= 0:
-                            if self.board[cy + i][cx] in oklist and sflag:  #
-                                goodmoves.append('s')
+                            if self.board[cy + i][cx] in oklist and sflag:
+                                goodmoves.append('s')  # добавлем букву хода, если ход возможен
                                 sflag = False
-                            elif self.board[cy + i][cx] in notokey:  #
+                            elif self.board[cy + i][cx] in notokey:
                                 sflag = False
-                            if self.board[cy - i][cx] in oklist and wflag:  #
-                                goodmoves.append('w')
+                            if self.board[cy - i][cx] in oklist and wflag:
+                                goodmoves.append('w')  # добавлем букву хода, если ход возможен
                                 wflag = False
-                            elif self.board[cy - i][cx] in notokey:  #
+                            elif self.board[cy - i][cx] in notokey:
                                 wflag = False
 
-                if len(goodmoves) >= 1:  #
-                    move = random.randint(0, len(goodmoves) - 1)
+                if len(goodmoves) >= 1:
+                    move = random.randint(0, len(goodmoves) - 1)  # случайно выбираем ход из возможных
                     self.ghostsmoves[g] = goodmoves[move]
-                self.ghost_move(g)  #
+                self.ghost_move(g)  # перемещаем привидение
             else:  #
-                self.ghost_move(g)
-            self.ghosts.draw(self.screen)  #
+                self.ghost_move(g)  # перемещаем привидение
+            self.ghosts.draw(self.screen)
             pygame.display.update()
-        for p in self.pink_cell:
+        for p in self.pink_cell:  # обновление розовых клеток, когда привидения через них проходят
             pygame.draw.rect(self.screen, (252, 15, 192), (p[0], p[1],
                                 self.cell_size, self.cell_size), width=0)
 
-    def collide_pacman(self, pos):
+    def collide_pacman(self, pos):  # просчитываем столкновения с памананом
         # столкновение с пакманом
         self.main_pacman_sprite.rect.x = pos[0]
         self.main_pacman_sprite.rect.y = pos[1]
